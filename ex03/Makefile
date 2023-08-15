@@ -1,5 +1,5 @@
 CXX		=	c++
-NAME 	= 	linear_combination
+NAME 	= 	dot
 SRC 	=	main.cpp
 HEADER	=	inc/Vector.hpp
 OBJS	=	$(addprefix obj/, $(SRC:.cpp=.o))
