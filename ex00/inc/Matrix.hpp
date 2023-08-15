@@ -6,25 +6,29 @@
 
 typedef long unsigned int usize_t;
 
+template <typename K>
 class Matrix{
     public:
-        Matrix(std::vector<std::vector<double> >);
+        Matrix(std::vector<std::vector<K> >);
 
-        std::vector<std::vector<double> > get_values() const;
+        std::vector<std::vector<K> > get_values() const;
         int get_rows() const;
         int get_columns() const;
 
         void    sub(Matrix);
         void    add(Matrix);
-        void    scl(double);
+        void    scl(K);
     private:
+        bool check_overflow(K a, K b, char op);
+
         // rows
         usize_t _n;
         // columns
         usize_t _m;
-        std::vector<std::vector<double> > _values;
+        std::vector<std::vector<K> > _values;
 };
 
-std::ostream& operator<<(std::ostream& os, const Matrix& values);
+template <typename K>
+std::ostream& operator<<(std::ostream& os, const Matrix<K>& values);
 
 #endif

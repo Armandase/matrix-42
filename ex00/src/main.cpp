@@ -1,6 +1,9 @@
 #include <iostream>
+
 #include "../inc/Vector.hpp"
 #include "../inc/Matrix.hpp"
+#include "../src/Matrix.tpp"
+#include "../src/Vector.tpp"
 
 int main(void) {
     // VECTOR
@@ -26,7 +29,7 @@ int main(void) {
     // MATRIX
     std::cout << "MATRIX: \n";
     try {
-        std::vector<std::vector<double> > vec = {
+        std::vector<std::vector<float> > vec = {
             {1.5, -7.0, 9.8},
             {4.0, 5.1, 22.0},
             {11.9, 0.0, 2.2}
@@ -34,10 +37,10 @@ int main(void) {
         Matrix m1(vec);
         std::cout << "m1 is equal to:\n" << m1 << std::endl;
 
-        std::vector<std::vector<double> > add = {
+        std::vector<std::vector<float> > add = {
             {1, 2, 3},
             {4, 5, 6},
-            {7, 8, 9}
+            {7, 8, 9},
         };
         Matrix m2(add);
         std::cout << "m2 is equal to:\n" << m2 << std::endl;
