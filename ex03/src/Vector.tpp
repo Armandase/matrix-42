@@ -82,7 +82,6 @@ K   Vector<K>::dot(Vector dot){
         }
         if (this->isOverflow(result, tmp, '+') == true)
             throw std::runtime_error("An addition generate an overflow.");
-        std::cout << "Result: "<< i<<std::endl;
         result += _values[i] * dot_values[i];
     }
     return result;
