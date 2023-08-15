@@ -1,6 +1,6 @@
 CXX		=	c++
 NAME 	= 	linear_combination
-SRC 	=	main.cpp Vector.cpp Matrix.cpp 
+SRC 	=	main.cpp
 HEADER	=	inc/Vector.hpp inc/Matrix.hpp
 OBJS	=	$(addprefix obj/, $(SRC:.cpp=.o))
 CXXFLAGS=	-Wall -Wextra -Werror --std=c++17 -g

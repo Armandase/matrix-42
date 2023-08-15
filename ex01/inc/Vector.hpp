@@ -6,20 +6,24 @@
 
 typedef long unsigned int usize_t;
 
+template <typename K>
 class Vector{
     public:
-        Vector(std::vector<double>);
+        Vector(std::vector<K>);
 
-        std::vector<double> get_values() const;
+        std::vector<K> get_values() const;
         usize_t get_size() const;
 
         void    sub(Vector);
         void    add(Vector);
-        void    scl(double);
+        void    scl(K);
     private:
-        std::vector<double> _values;
+        bool isOverflow(K a, K b, char op);
+        
+        std::vector<K> _values;
 };
 
-std::ostream& operator<<(std::ostream& os, const Vector& values);
+template <typename K>
+std::ostream& operator<<(std::ostream& os, const Vector<K>& values);
 
 #endif
