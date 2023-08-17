@@ -1,48 +1,40 @@
 #include <iostream>
 
-#include "../inc/Vector.hpp"
-#include "../src/Vector.tpp"
-
-template <typename K>
-Vector<K>   cross_product(Vector<K> &u, Vector<K> &v){
-    if (u.get_size() != 3 || u.get_size() != v.get_size()){
-        throw std::runtime_error("Vectors given as input have a wrong size");
-    }
-    return ();
-}
+#include "../inc/Matrix.hpp"
+#include "../src/Matrix.tpp"
 
 int main(void) {
-    std::cout << "COSINE: \n";
+    std::cout << "Determinant: \n";
     try {
-        {
-            std::vector<std::vector<float> > matrix_u = {
-                {1., -1.},
-                {-1., 1.},
-            };
-            Matrix u(matrix_u);
+        // {
+        //     std::vector<std::vector<float> > matrix_u = {
+        //         {1., -1.},
+        //         {-1., 1.},
+        //     };
+        //     Matrix u(matrix_u);
 
-            std::cout << u.determinant() << std::endl;
-        }
-        {
-            std::vector<std::vector<float> > matrix_u = {
-                {2., 0., 0.},
-                {0., 2., 0.},
-                {0., 0., 2.},
-            };
-            Matrix u(matrix_u);
+        //     std::cout << u.determinant() << std::endl;
+        // }
+        // {
+        //     std::vector<std::vector<float> > matrix_u = {
+        //         {2., 0., 0.},
+        //         {0., 2., 0.},
+        //         {0., 0., 2.},
+        //     };
+        //     Matrix u(matrix_u);
 
-            std::cout << u.determinant() << std::endl;
-        }
-        {
-            std::vector<std::vector<float> > matrix_u = {
-                {8., 5., -2.},
-                {4., 7., 20.},
-                {7., 6., 1.},
-            };
-            Matrix u(matrix_u);
+        //     std::cout << u.determinant() << std::endl;
+        // }
+        // {
+        //     std::vector<std::vector<float> > matrix_u = {
+        //         {8., 5., -2.},
+        //         {4., 7., 20.},
+        //         {7., 6., 1.},
+        //     };
+        //     Matrix u(matrix_u);
 
-            std::cout << u.determinant() << std::endl;
-        }
+        //     std::cout << u.determinant() << std::endl;
+        // }
         {
             std::vector<std::vector<float> > matrix_u = {
                 {8., 5., -2., 4.},

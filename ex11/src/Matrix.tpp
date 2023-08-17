@@ -1,5 +1,6 @@
 #include "../inc/Matrix.hpp"
 #include <stdexcept>
+#include <cmath>
 
 template <typename K>
 Matrix<K>::Matrix(std::vector<std::vector<K> > numbers){
@@ -87,17 +88,41 @@ void    Matrix<K>::scl(K scalar){
 template <typename K>
 std::vector<std::vector<K> > createMatrixWithoutRow(usize_t row, Matrix<K> matrix){
     std::vector<std::vector<K> > result;
-    std::vector<K> tmp;
-    usize_t reduiced_size = _n -1;
+    std::vector<std::vector<K> > currentMatrix = matrix.get_values();
+    usize_t size = matrix.get_columns();
 
-    for (usize_t i = 1; i < _n; i++){
-        for (usize_t j; j < reduiced_size; j++){
-            if (j != row)
-                tmp.push_back(matrix[i][j]);
+    for (usize_t i = 1; i < size; i++){
+        std::vector<K> tmp;
+        for (usize_t j = 0; j < size; j++){
+            if (j == row)
+                continue ;
+            K newValue = currentMatrix[i][j];
+            tmp.push_back(newValue);
         }
-        result.push_back(tmp);
+        result.push_back(std::vector<K> (tmp));
     }
     return (result);
+}
+
+template <typename K>
+K recursive_det(Matrix<K> matrix){
+    std::vector<std::vector<K> > matrix_values = matrix.get_values();
+    usize_t size = matrix.get_rows();
+    if (size == 2) {
+        //check overflows
+        return (matrix_values[0][0] * matrix_values[1][1]
+        - matrix_values[1][0] * matrix_values[0][1]);
+    }
+    K       result = 0;
+    K       tmp;
+    K       cofactor;
+    for (usize_t i = 0; i < size; i++){
+        Matrix  smaller_matrix(createMatrixWithoutRow(i, matrix));
+        tmp = recursive_det(smaller_matrix);
+        cofactor = std::pow(-1, i) * matrix_values[0][i];
+        result += tmp * cofactor;
+    }
+    return result;
 }
 
 template <typename K>
@@ -109,19 +134,8 @@ K   Matrix<K>::determinant(){
         return (_values[0][0] * _values[1][1]
         - _values[0][1] * _values[1][0]);
     }
-
-    Matrice tmp = _values;
-    K       res;
-    for (usize_t i = 0; i < _m; i++){
-        K scalar = _values[0][i];
-        do
-        {
-            createMatrixWithoutRow(i, tmp);
-        } while (tmp.get_rows() != 2);
-        _values[i]
-        //paire +
-        //impaire -
-    }
+    return (recursive_det(*this));
+    
 }
 
 

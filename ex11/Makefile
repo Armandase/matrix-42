@@ -1,7 +1,7 @@
 CXX		=	c++
 NAME 	= 	determinant
 SRC 	=	main.cpp
-HEADER	=	inc/Vector.hpp
+HEADER	=	inc/Matrix.hpp
 OBJS	=	$(addprefix obj/, $(SRC:.cpp=.o))
 CXXFLAGS=	-Wall -Wextra -Werror --std=c++17 -g
 
