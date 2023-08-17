@@ -96,30 +96,46 @@ std::vector<std::vector<K> > createMatrixWithoutRow(usize_t row, Matrix<K> matri
         for (usize_t j = 0; j < size; j++){
             if (j == row)
                 continue ;
-            K newValue = currentMatrix[i][j];
-            tmp.push_back(newValue);
+            tmp.push_back(currentMatrix[i][j]);
         }
-        result.push_back(std::vector<K> (tmp));
+        result.push_back(tmp);
     }
     return (result);
 }
 
 template <typename K>
-K recursive_det(Matrix<K> matrix){
+K Matrix<K>::recursive_det(Matrix<K> matrix){
     std::vector<std::vector<K> > matrix_values = matrix.get_values();
     usize_t size = matrix.get_rows();
     if (size == 2) {
-        //check overflows
-        return (matrix_values[0][0] * matrix_values[1][1]
-        - matrix_values[1][0] * matrix_values[0][1]);
+        if (isOverflow(matrix_values[0][0], matrix_values[1][1], '*') == true)
+            throw std::runtime_error("A multiplication generate an overflow.");
+        K ad = matrix_values[0][0] * matrix_values[1][1];
+
+        if (isOverflow(matrix_values[1][0], matrix_values[0][1], '*') == true)
+            throw std::runtime_error("A multiplication generate an overflow.");
+        K bc = matrix_values[1][0] * matrix_values[0][1];
+        
+        if (isOverflow(ad, bc, '-') == true)
+            throw std::runtime_error("A substraction generate an overflow.");
+        return (ad - bc);
     }
+
     K       result = 0;
     K       tmp;
     K       cofactor;
     for (usize_t i = 0; i < size; i++){
         Matrix  smaller_matrix(createMatrixWithoutRow(i, matrix));
         tmp = recursive_det(smaller_matrix);
+
+        if (isOverflow(std::pow(-1, i), matrix_values[0][i], '*') == true)
+            throw std::runtime_error("A multiplication generate an overflow.");
         cofactor = std::pow(-1, i) * matrix_values[0][i];
+
+        if (isOverflow(tmp, cofactor, '*') == true)
+            throw std::runtime_error("A multiplication generate an overflow.");
+        else if (isOverflow(result, tmp * cofactor, '+') == true)
+            throw std::runtime_error("An addition generate an overflow.");
         result += tmp * cofactor;
     }
     return result;
@@ -130,32 +146,33 @@ K   Matrix<K>::determinant(){
     if (this->_n != this->_m){
         throw std::runtime_error("You can't compute determinant with a non square matrix");
     }
-    if (this->_m == 2) {
-        return (_values[0][0] * _values[1][1]
-        - _values[0][1] * _values[1][0]);
-    }
     return (recursive_det(*this));
-    
 }
 
 
 template <typename K>
 bool Matrix<K>::isOverflow(K a, K b, char op){
     K result;
-    if (op == '+')
+    if (op == '+'){
         result = a + b;
-    else if (op == '-')
+        if((a > 0 && b > 0 && result < 0) 
+            || (a < 0 && b < 0 && result > 0))
+            return true;
+        return false;
+    }
+    else if (op == '-'){
         result = a - b;
+        if (result > a && b > 0)
+            return true;
+        else
+            return false;
+    }
     else if (op == '*'){
         if (a == 0 || b == 0)
             return false;
         result = a * b;
         return (a == result / b) ? false : true;
     }
-
-    if((a > 0 && b > 0 && result < 0) 
-        || (a < 0 && b < 0 && result > 0))
-        return true;
     return false;
 }
 

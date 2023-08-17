@@ -25,6 +25,7 @@ class Matrix{
 		Matrix<K>& operator * (const K);
     private:
         bool isOverflow(K a, K b, char op);
+        K   recursive_det(Matrix<K> matrix);
 
         // rows
         usize_t _n;

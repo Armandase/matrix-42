@@ -77,15 +77,25 @@ std::ostream& operator<<(std::ostream& os, const Vector<K>& values)
 template <typename K>
 bool Vector<K>::check_overflow(K a, K b, char op){
     K result;
-    if (op == '+')
+    if (op == '+'){
         result = a + b;
-    else if (op == '-')
+        if((a > 0 && b > 0 && result < 0) 
+            || (a < 0 && b < 0 && result > 0))
+            return true;
+        return false;
+    }
+    else if (op == '-'){
         result = a - b;
-    else if (op == '*')
+        if (result > a && b > 0)
+            return true;
+        else
+            return false;
+    }
+    else if (op == '*'){
+        if (a == 0 || b == 0)
+            return false;
         result = a * b;
-
-    if((a > 0 && b > 0 && result < 0) 
-        || (a < 0 && b < 0 && result > 0))
-        return true;
+        return (a == result / b) ? false : true;
+    }
     return false;
 }
