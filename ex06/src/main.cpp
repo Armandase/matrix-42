@@ -65,6 +65,7 @@ Vector<K>   cross_product(Vector<K> &u, Vector<K> &v){
     result_vec.push_back(y1z2 - z1y2);
     result_vec.push_back(z1x2 - x1z2);
     result_vec.push_back(x1y2 - y1x2);
+    //this result is perpendicular to both a and b
     return (Vector (result_vec));
 }
 
