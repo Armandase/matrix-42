@@ -255,38 +255,44 @@ Matrix<K>   Matrix<K>::transpose(){
 template <typename K>
 Matrix<K>   Matrix<K>::row_echelon(){
     std::vector<std::vector<K> > vec_result = _values;
-    std::vector<K> tmp;
-    K   pivot;
-    usize_t lead = 0;
+    K tmp;
+    K divisor;
+    usize_t pivot = 0;
     usize_t i = 0;
     
-    for (usize_t r = 0; r < _n; i++){
-        if (vec_result[r].size() <= lead)
-            return ;
+    for (usize_t r = 0; r < _n; r++){
+        if (_m <= pivot)
+            break ;
         i = r;
-        while (vec_result[i][lead] == 0){
+        while (vec_result[i][pivot] == 0){
             i++;
             if (i == _n){
                 i = r;
-                lead++;
-                if vec_result[i].size() == lead
-                    return;
+                pivot++;
+                if (_m == pivot)
+                    return (Matrix (vec_result));
             }
         }
-        tmp.clear();
-        tmp = vec_result[i];
-        vec_result[i] = vec_result[r];
-        vec_result[r] = tmp;
-        if (vec_result[r][lead] != 0)
-            r /= vec_result[r][lead];
         for (usize_t j = 0; j < _n; j++){
-            if (i != r)
-            
+            tmp = vec_result[r][j];
+            vec_result[r][j] = vec_result[i][j];
+            vec_result[i][j] = tmp;
         }
+        divisor = vec_result[r][pivot];
+        if (divisor)
+            for (usize_t j = 0; j < _m; j++)
+                vec_result[r][j] = vec_result[i][j] / divisor;
+        for (usize_t j = 0; j < _n; j++){
+            if (j != r){
+                K hold = vec_result[j][pivot];
+                for (usize_t k = 0; k < _m; k++)
+                    vec_result[j][k] = vec_result[j][k] - (hold * vec_result[r][k]);
+            }
+        }
+        pivot++;
     }
     return (Matrix (vec_result));
 }
-
 
 template <typename K>
 bool Matrix<K>::isOverflow(K a, K b, char op){
