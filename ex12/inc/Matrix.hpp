@@ -15,10 +15,11 @@ class Matrix{
         int get_rows() const;
         int get_columns() const;
 
-        void    sub(Matrix);
-        void    add(Matrix);
-        void    scl(K);
-        K       determinant();
+        void        sub(Matrix);
+        void        add(Matrix);
+        void        scl(K);
+        K           determinant();
+        Matrix<K>   inverse();
 
         Matrix<K>& operator + (const Matrix<K>&);
 		Matrix<K>& operator - (const Matrix<K>&);
@@ -26,6 +27,7 @@ class Matrix{
     private:
         bool isOverflow(K a, K b, char op);
         K   recursive_det(Matrix<K> matrix);
+        std::vector<std::vector<K> > gauss_jordan_general(std::vector<std::vector<K> > matrix);
 
         // rows
         usize_t _n;

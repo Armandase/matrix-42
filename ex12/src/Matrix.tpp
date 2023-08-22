@@ -153,8 +153,72 @@ template <typename K>
 Matrix<K> Matrix<K>::inverse(){
     if(this->_n != this->_m)
         throw std::runtime_error("You can't compute inverse with a non square matrix");
+    std::vector<std::vector<K> > result;
+    std::vector<std::vector<K> > identity;
 
+    identity.resize(_n);
+    for (usize_t i = 0; i < _n; i++){
+        for (usize_t j = 0; j < _m; j++){
+            identity[i].push_back(0.0);
+            if (i == j){
+                identity[i][j] = 1;
+            }
+        }
+    }
 
+    result = gauss_jordan_general(identity);
+    return (Matrix (result));
+}
+
+template <typename K>
+std::vector<std::vector<K> > Matrix<K>::gauss_jordan_general(std::vector<std::vector<K> > identity){
+    std::vector<std::vector<K> > result = _values;
+    std::vector<K> tmp;
+    usize_t lead = 0;
+    usize_t i = 0;
+
+    for (usize_t r = 0; r < _n; r++){
+        if (_m <= lead)
+            break ;
+        i = r;
+        while (!result[i][lead]){
+            i++;
+            if (i == _n){
+                i = r;
+                lead++;
+                if (lead == _m)
+                    break ;
+            }
+        }
+
+        tmp = result[i];
+        result[i] = result[r];
+        result[r] = tmp;
+        tmp = identity[i];
+        identity[i] = identity[r];
+        identity[r] = tmp;
+
+        if (result[r][lead]){
+            K divisor = result[r][lead];
+            for (usize_t j = 0; j < _m; j++){
+                result[r][j] /= divisor;
+                identity[r][j] /= divisor;
+            }
+        }
+
+        for (usize_t k = 0; k < _n; k++){
+            if (k != r){
+                K scalar = result[k][lead];
+                for (usize_t j = 0; j < _m; j++){
+                    result[k][j] -= result[r][j] * scalar;
+                    identity[k][j] -= identity[r][j] * scalar;
+
+                }
+            }
+        }
+        lead++;
+    }
+    return (identity);
 }
 
 template <typename K>

@@ -4,7 +4,7 @@
 #include "../src/Matrix.tpp"
 
 int main(void) {
-    std::cout << "Determinant: \n";
+    std::cout << "Inverse: \n";
     try {
         {
             std::vector<std::vector<float> > matrix_u = {
@@ -14,7 +14,7 @@ int main(void) {
             };
             Matrix u(matrix_u);
 
-            std::cout << u.determinant() << std::endl;
+            std::cout << u.inverse() << std::endl;
         }
         {
             std::vector<std::vector<float> > matrix_u = {
@@ -24,7 +24,7 @@ int main(void) {
             };
             Matrix u(matrix_u);
 
-            std::cout << u.determinant() << std::endl;
+            std::cout << u.inverse() << std::endl;
         }
         {
             std::vector<std::vector<float> > matrix_u = {
@@ -34,7 +34,7 @@ int main(void) {
             };
             Matrix u(matrix_u);
 
-            std::cout << u.determinant() << std::endl;
+            std::cout << u.inverse() << std::endl;
         }
     } catch (std::runtime_error& e){
         std::cout << e.what() << std::endl; 
