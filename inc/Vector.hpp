@@ -5,8 +5,8 @@
 # include <ostream>
 
 typedef long unsigned int usize_t;
+typedef float K;
 
-template <typename K>
 class Vector{
     public:
         Vector(std::vector<K>);
@@ -17,17 +17,19 @@ class Vector{
         void    sub(Vector);
         void    add(Vector);
         void    scl(K);
+        // determine a quel point les vecteurs pointent dans la meme direction
+        K    dot(Vector);
+        K    norm_1();
+        K    norm();
+        K    norm_inf();
 
-        Vector<K>& operator + (const Vector<K>&);
-		Vector<K>& operator - (const Vector<K>&);
-		Vector<K>& operator * (const K);
+        Vector& operator + (const Vector&);
+		Vector& operator - (const Vector&);
+		Vector& operator * (const K);
     private:
-        bool isOverflow(K a, K b, char op);
-        
         std::vector<K> _values;
 };
 
-template <typename K>
-std::ostream& operator<<(std::ostream& os, const Vector<K>& values);
+std::ostream& operator<<(std::ostream& os, const Vector& values);
 
 #endif

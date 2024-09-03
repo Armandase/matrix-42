@@ -5,8 +5,8 @@
 # include <ostream>
 
 typedef long unsigned int usize_t;
+typedef float K;
 
-template <typename K>
 class Matrix{
     public:
         Matrix(std::vector<std::vector<K> >);
@@ -18,8 +18,13 @@ class Matrix{
         void    sub(Matrix);
         void    add(Matrix);
         void    scl(K);
+        K       determinant();
+
+        Matrix& operator + (const Matrix&); 
+		Matrix& operator - (const Matrix&);
+		Matrix& operator * (const K);
     private:
-        bool check_overflow(K a, K b, char op);
+        K   recursive_det(Matrix matrix);
 
         // rows
         usize_t _n;
@@ -28,7 +33,6 @@ class Matrix{
         std::vector<std::vector<K> > _values;
 };
 
-template <typename K>
-std::ostream& operator<<(std::ostream& os, const Matrix<K>& values);
+std::ostream& operator<<(std::ostream& os, const Matrix& values);
 
 #endif

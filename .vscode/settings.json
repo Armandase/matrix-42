@@ -47,6 +47,7 @@
         "span": "c",
         "streambuf": "c",
         "typeinfo": "c",
-        "*.tpp": "cpp"
+        "*.tpp": "cpp",
+        "cinttypes": "cpp"
     }
 }

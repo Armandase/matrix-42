@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "../inc/Matrix.hpp"
-#include "../src/Matrix.tpp"
 
 int main(void) {
     std::cout << "Determinant: \n";
