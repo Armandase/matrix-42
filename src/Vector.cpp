@@ -17,6 +17,16 @@ usize_t Vector::get_size() const{
     return _values.size();
 }
 
+void    Vector::set_values(std::vector<K>& vec)
+{
+   this-> _values = vec;
+}
+void    Vector::set_specific_value (size_t i, K value){
+    if (i >= _values.size()){
+        throw std::runtime_error("impossible to set a value outside the vector");
+    }
+    _values[i] = value;
+}
 
 void    Vector::add(Vector add){
     std::vector<K> add_values = add.get_values();

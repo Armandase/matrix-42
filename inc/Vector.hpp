@@ -13,6 +13,8 @@ class Vector{
 
         std::vector<K> get_values() const;
         usize_t get_size() const;
+        void    set_values(std::vector<K>& vec);
+        void    set_specific_value (size_t i, K value);
 
         void    sub(Vector);
         void    add(Vector);
