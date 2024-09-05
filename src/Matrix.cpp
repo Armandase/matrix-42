@@ -19,6 +19,17 @@ Matrix::Matrix(std::vector<std::vector<K> > numbers){
     _values = numbers;
 }
 
+Matrix::Matrix(const Matrix& matrix)
+{
+    _values = matrix.get_values();
+}
+
+Matrix Matrix::operator = (const Matrix& matrix)
+{
+    _values = matrix.get_values();
+    return (*this);
+}
+
 std::vector<std::vector<K> > Matrix::get_values() const{
     return _values;
 }
@@ -38,6 +49,22 @@ void Matrix::set_specific_value (size_t i, size_t j, K value){
         throw std::runtime_error("impossible to set a value outside the matrix");
     }
     _values[i][j] = value;
+}
+
+void    Matrix::swap_columns(usize_t column1, usize_t column2){
+    for (usize_t i = 0; i < this->get_rows(); i++){
+        K tmp = this->get_specific_value(i, column1);
+        this->set_specific_value(i, column1, this->get_specific_value(i, column2));
+        this->set_specific_value(i, column2, tmp);
+    }
+}
+
+void Matrix::swap_rows(usize_t row1, usize_t row2){
+    for (usize_t i = 0; i < this->get_columns(); i++){
+        K tmp = this->get_specific_value(row1, i);
+        this->set_specific_value(row1, i, this->get_specific_value(row2, i));
+        this->set_specific_value(row2, i, tmp);
+    }
 }
 
 void     Matrix::add(Matrix add){
@@ -134,7 +161,134 @@ Matrix   Matrix::mul_mat(Matrix& matrix){
     return result;
 };
 
- std::vector<std::vector<K> > createMatrixWithoutRow(usize_t row,  Matrix matrix){
+/*
+    La trace d'une matrice est la somme des éléments de la diagonale principale
+    utile pour calculer le rang ou l'ordre d'une matrice
+*/
+K   Matrix::trace() const {
+    if (this->get_rows() != this->get_columns()){
+        throw std::runtime_error("Can't compute the trace with a non-square matrix.");
+    }
+
+    K result;
+    for (usize_t i = 0; i < this->get_rows(); i++){
+        if (i == 0){
+            result = _values[i][i];
+            continue ;
+        }
+        result += _values[i][i];
+    }
+    return (result);
+}
+
+/*
+    La matrice transpose d'une matrice est obtenue en échangeant les lignes et les colonnes
+*/
+Matrix   Matrix::transpose() const {
+    std::vector<std::vector<K> > vec_result;
+
+    for (usize_t i = 0; i < this->get_rows(); i++){
+        std::vector<K> tmp;
+        for (usize_t j = 0; j < this->get_columns(); j++){
+            if (i == 0){
+                tmp.clear();
+                tmp.push_back(_values[i][j]);
+                vec_result.push_back(tmp);
+                continue ;
+            }
+            vec_result[j].push_back(_values[i][j]);
+        }
+    }
+    return (Matrix (vec_result));
+}
+
+int found_non_zero_column(usize_t row_start, const Matrix& matrix){
+    usize_t rows = matrix.get_rows();
+    usize_t columns = matrix.get_columns();
+    for (usize_t i = 0; i < columns; i++){
+        for (usize_t j = row_start; j < rows; j++){
+            if (matrix.get_specific_value(j, i) != 0){
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+Matrix   Matrix::row_echelon_form() const {
+    Matrix result(*this);
+
+    if (result.get_rows() == 0 || result.get_columns() == 0){
+        throw std::runtime_error("Can't compute the row echelon form of an empty matrix.");
+    }
+
+    // form left to right and top to bottom
+    for (size_t i = 0; i < result.get_rows(); i++){
+        // find the first non-zero column
+        int column_non_empty = found_non_zero_column(i, result);
+        // if there is just zero column, stop
+        if (column_non_empty == -1)
+            return result;
+        // if the non-zero column is not in the diagonal change the index row
+        if (column_non_empty != static_cast<int>(i))
+            i = column_non_empty - 1;
+
+        // pivot is the first non-zero element of the unprocess row
+        K pivot = result.get_specific_value(i, column_non_empty);
+        // if the pivot is null and there is a non-zero element in the same column, swap the rows
+        if (pivot == 0.){
+            size_t j = i + 1;
+            while (j < result.get_rows()){
+                if (result.get_specific_value(j, column_non_empty)){
+                    result.swap_rows(i, j);
+                    break ;
+                }
+                j++;
+            }
+            if (j == result.get_rows())
+                continue ;
+        }
+
+        // normalize the row
+        K factor = 1 / pivot;
+        for (size_t j = 0; j < result.get_columns(); j++){
+            result.set_specific_value(i, j, result.get_specific_value(i, j) * factor);
+        }
+
+        // zero the other rows
+        for (size_t j = i + 1; j < result.get_rows(); j++){
+            K factor_to_zero = (result.get_specific_value(j, column_non_empty)) * -1;
+            for (size_t k = 0; k < result.get_columns(); k++){
+                result.set_specific_value(j, k, result.get_specific_value(j, k) + factor_to_zero * result.get_specific_value(i, k));
+            }
+        }
+    }
+
+    return result;
+}
+
+Matrix Matrix::reduced_row_echelon_form() const{
+    //get the row echelon form
+    Matrix result(this->row_echelon_form());
+    
+    usize_t rows = result.get_rows();
+    usize_t columns = result.get_columns();
+    for (usize_t i = 0; i < rows; i++){
+        int column_non_empty = found_non_zero_column(i, result);
+        if (column_non_empty == -1)
+            return result;
+        for (usize_t j = 0; j < i; j++){
+            K factor_to_zero = (result.get_specific_value(j, column_non_empty)) * -1;
+            for (usize_t k = 0; k < columns; k++){
+                result.set_specific_value(j, k, result.get_specific_value(j, k) + factor_to_zero * result.get_specific_value(i, k));
+            }
+        }
+    }
+    return result;
+}
+
+
+std::vector<std::vector<K> > createMatrixWithoutRow(usize_t row,  Matrix matrix){
     std::vector<std::vector<K> > result;
     std::vector<std::vector<K> > currentMatrix = matrix.get_values();
     usize_t size = matrix.get_columns();

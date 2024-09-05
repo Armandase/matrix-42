@@ -1,10 +1,13 @@
 #include <iostream>
 
 #include "../inc/Matrix.hpp"
-#include "../src/Matrix.tpp"
+
+#define BOLD "\e[1m"
+#define UNDERLINE "\e[4m"
+#define END "\e[0m"
 
 int main(void) {
-    std::cout << "Trace: \n";
+    std::cout << UNDERLINE << "TRACE: \n" << END;
     try {
         {
             std::vector<std::vector<float> > matrix_u = {
@@ -12,8 +15,7 @@ int main(void) {
                 {0., 1.},
             };
             Matrix u(matrix_u);
-
-            std::cout << u.trace() << std::endl;
+            std::cout << "Matrix U\n" << u << "Trace\n" << u.trace() << "\n" << std::endl;
         }
         {
             std::vector<std::vector<float> > matrix_u = {
@@ -22,8 +24,7 @@ int main(void) {
                 {-2., 3., 4.},
             };
             Matrix u(matrix_u);
-
-            std::cout << u.trace() << std::endl;
+            std::cout << "Matrix U\n" << u << "Trace\n" << u.trace() << "\n" << std::endl;
         }
         {
             std::vector<std::vector<float> > matrix_u = {
@@ -32,8 +33,7 @@ int main(void) {
                 {0., 6., 4.},
             };
             Matrix u(matrix_u);
-
-            std::cout << u.trace() << std::endl;
+            std::cout << "Matrix U\n" << u << "Trace\n" << u.trace() << "\n" << std::endl;
         }
     } catch (std::runtime_error& e){
         std::cout << e.what() << std::endl; 
