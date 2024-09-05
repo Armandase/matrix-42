@@ -270,13 +270,12 @@ Matrix   Matrix::row_echelon_form() const {
 Matrix Matrix::reduced_row_echelon_form() const{
     //get the row echelon form
     Matrix result(this->row_echelon_form());
-    
-    usize_t rows = result.get_rows();
+
     usize_t columns = result.get_columns();
-    for (usize_t i = 0; i < rows; i++){
+    for (usize_t i = result.get_rows() - 1; i > 0; i--){
         int column_non_empty = found_non_zero_column(i, result);
         if (column_non_empty == -1)
-            return result;
+            return result;  
         for (usize_t j = 0; j < i; j++){
             K factor_to_zero = (result.get_specific_value(j, column_non_empty)) * -1;
             for (usize_t k = 0; k < columns; k++){

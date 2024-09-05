@@ -7,35 +7,35 @@
 #define END "\e[0m"
 
 int main(void) {
-    std::cout << UNDERLINE  << "ROW ECHELON FORM: \n" << END;
+    std::cout << UNDERLINE  << "REDUCED ROW ECHELON FORM: \n" << END;
     try {
-        // {
-        //     std::vector<std::vector<float> > matrix_u = {
-        //         {1., 0., 0., 0.},
-        //         {0., 0., 1., 0.},
-        //         {0., 0., 0., 1.},
-        //     };
-        //     Matrix u(matrix_u);
-        //     std::cout << "Matrix U\n" << u << "Row Echelon\n" << u.row_echelon_form() << "\n"<< std::endl;
-        // }
-        // {
-        //     std::vector<std::vector<float> > matrix_u = {
-        //         {1., 2.},
-        //         {3., 4.},
-        //     };
-        //     Matrix u(matrix_u);
+        {
+            std::vector<std::vector<float> > matrix_u = {
+                {1., 0., 0.},
+                {0., 1., 0.},
+                {0., 0., 1.},
+            };
+            Matrix u(matrix_u);
+            std::cout << "Matrix U\n" << u << "Reduced Row Echelon\n" << u.reduced_row_echelon_form() << "\n"<< std::endl;
+        }
+        {
+            std::vector<std::vector<float> > matrix_u = {
+                {1., 2.},
+                {3., 4.},
+            };
+            Matrix u(matrix_u);
 
-        //     std::cout << "Matrix U\n" << u << "Row Echelon\n" << u.row_echelon_form() << "\n"<< std::endl;
-        // }
-        // {
-        //     std::vector<std::vector<float> > matrix_u = {
-        //         {1., 2.},
-        //         {2., 4.},
-        //     };
-        //     Matrix u(matrix_u);
+            std::cout << "Matrix U\n" << u << "Reduced Row Echelon\n" << u.reduced_row_echelon_form() << "\n"<< std::endl;
+        }
+        {
+            std::vector<std::vector<float> > matrix_u = {
+                {1., 2.},
+                {2., 4.},
+            };
+            Matrix u(matrix_u);
 
-        //     std::cout << "Matrix U\n" << u << "Row Echelon\n" << u.row_echelon_form() << "\n"<< std::endl;
-        // }
+            std::cout << "Matrix U\n" << u << "Reduced Row Echelon\n" << u.reduced_row_echelon_form() << "\n"<< std::endl;
+        }
         {
             std::vector<std::vector<float> > matrix_u = {
                 {8., 5., -2., 4., 28.},
