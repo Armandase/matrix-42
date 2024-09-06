@@ -230,9 +230,8 @@ Matrix   Matrix::row_echelon_form() const {
         if (column_non_empty == -1)
             return result;
         // if the non-zero column is not in the diagonal change the index row
-        if (column_non_empty != static_cast<int>(i))
+        if (column_non_empty != static_cast<int>(i) && column_non_empty > 0)
             i = column_non_empty - 1;
-
         // pivot is the first non-zero element of the unprocess row
         K pivot = result.get_specific_value(i, column_non_empty);
         // if the pivot is null and there is a non-zero element in the same column, swap the rows
@@ -247,6 +246,7 @@ Matrix   Matrix::row_echelon_form() const {
             }
             if (j == result.get_rows())
                 continue ;
+            pivot = result.get_specific_value(i, column_non_empty);
         }
 
         // normalize the row
@@ -474,6 +474,24 @@ Matrix  Matrix::inverse() const
     return identity_matrix;
 }
 
+/*
+    Le rang d'une matrice est le nombre de lignes non nulles dans sa forme échelonnée
+*/
+usize_t Matrix::rank() const
+{
+    Matrix row_echelon = this->row_echelon_form();
+    usize_t rank = 0;
+    for (usize_t i = 0; i < row_echelon.get_rows(); i++){
+        for (usize_t j = 0; j < row_echelon.get_columns(); j++){
+            if (row_echelon.get_specific_value(i, j) != 0){
+                rank++;
+                break ;
+            }
+        }
+    }
+    return rank;
+}
+
 Matrix&  Matrix::operator + (const  Matrix& add_overload)
 {
 	this->add(add_overload);
@@ -492,6 +510,9 @@ Matrix&  Matrix::operator + (const  Matrix& add_overload)
 	return (*this);
 }
 K Matrix::get_specific_value (int i, int j) const{
+    if (i < 0 || i >= static_cast<int>(this->get_rows()) || j < 0 || j >= static_cast<int>(this->get_columns())){
+        throw std::runtime_error("impossible to get a value outside the matrix");
+    }
     return _values[i][j];
 }
 

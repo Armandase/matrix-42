@@ -36,10 +36,11 @@ class Matrix{
         Matrix  reduced_row_echelon_form() const;
         K       determinant() const;
         Matrix  identity() const;
-    
         int     found_non_identity_column(size_t row_start, const Matrix& matrix) const;
         Matrix  row_echelon_form_on_pair(Matrix& mirror) const;
         Matrix  inverse() const;
+        usize_t rank() const;
+    
 
         Matrix& operator + (const Matrix&); 
 		Matrix& operator - (const Matrix&);
