@@ -10,7 +10,7 @@ int main(void) {
     std::cout << UNDERLINE  << "TRANSPOSE: \n" << END;
     try {
         {
-            std::vector<std::vector<float> > matrix_u = {
+            std::vector<std::vector<K> > matrix_u = {
                 {1., 0.},
                 {0., 1.},
             };
@@ -18,7 +18,7 @@ int main(void) {
             std::cout << "Matrix U\n" << u << "Transpose\n" << u.transpose() << "\n"<< std::endl;
         }
         {
-            std::vector<std::vector<float> > matrix_u = {
+            std::vector<std::vector<K> > matrix_u = {
                 {2., -5., 0.},
                 {4., 3., 7.},
                 {-2., 3., 4.},
@@ -28,7 +28,7 @@ int main(void) {
             std::cout << "Matrix U\n" << u << "Transpose\n" << u.transpose() << "\n"<< std::endl;
         }
         {
-            std::vector<std::vector<float> > matrix_u = {
+            std::vector<std::vector<K> > matrix_u = {
                 {-2., -8.},
                 {1., -23.},
                 {0., 6.},

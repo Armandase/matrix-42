@@ -3,16 +3,17 @@
 #include "../inc/Matrix.hpp"
 
 int main(void) {
-    std::cout << "DETERMINANT: \n";
+    std::cout << "INVERSE: \n";
     try {
         {
             std::vector<std::vector<K> > matrix_u = {
-                {1., -1.},
-                {-1., 1.},
+                {1., 0., 0.},
+                {0., 1., 0.},
+                {0., 0., 1.},
             };
             Matrix u(matrix_u);
             
-            std::cout << "Matrix U\n" << u << "Determinant\n" << u.determinant() << "\n"<< std::endl;
+            std::cout << "Matrix U\n" << u << "Inverse\n" << u.inverse() << "\n"<< std::endl;
         }
         {
             std::vector<std::vector<K> > matrix_u = {
@@ -22,7 +23,7 @@ int main(void) {
             };
             Matrix u(matrix_u);
 
-            std::cout << "Matrix U\n" << u << "Determinant\n" << u.determinant() << "\n"<< std::endl;
+            std::cout << "Matrix U\n" << u << "Inverse\n" << u.inverse() << "\n"<< std::endl;
         }
         {
             std::vector<std::vector<K> > matrix_u = {
@@ -32,18 +33,7 @@ int main(void) {
             };
             Matrix u(matrix_u);
 
-            std::cout << "Matrix U\n" << u << "Determinant\n" << u.determinant() << "\n"<< std::endl;
-        }
-        {
-            std::vector<std::vector<K> > matrix_u = {
-                {8., 5., -2., 4.},
-                {4., 2.5, 20., 4.},
-                {8., 5., 1., 4.},
-                {28., -4., 17., 1.},
-            };
-            Matrix u(matrix_u);
-
-            std::cout << "Matrix U\n" << u << "Determinant\n" << u.determinant() << "\n"<< std::endl;
+            std::cout << "Matrix U\n" << u << "Inverse\n" << u.inverse() << "\n"<< std::endl;
         }
     } catch (std::runtime_error& e){
         std::cout << e.what() << std::endl; 

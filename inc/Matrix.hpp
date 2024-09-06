@@ -32,14 +32,19 @@ class Matrix{
         Matrix  transpose() const;
         Matrix  row_echelon_form() const;
         Matrix  reduced_row_echelon_form() const;
-        K       determinant();
+        K       determinant() const;
+        Matrix  identity() const;
+    
+        int     found_non_identity_column(size_t row_start, const Matrix& matrix) const;
+        Matrix  row_echelon_form_on_pair(Matrix& mirror) const;
+        Matrix  inverse() const;
 
         Matrix& operator + (const Matrix&); 
 		Matrix& operator - (const Matrix&);
 		Matrix& operator * (const K);
 
     private:
-        K   recursive_det(Matrix matrix);
+        K   recursive_det(Matrix matrix) const;
 
         std::vector<std::vector<K> > _values;
 };

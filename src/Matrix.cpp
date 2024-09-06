@@ -286,7 +286,6 @@ Matrix Matrix::reduced_row_echelon_form() const{
     return result;
 }
 
-
 std::vector<std::vector<K> > createMatrixWithoutRow(usize_t row,  Matrix matrix){
     std::vector<std::vector<K> > result;
     std::vector<std::vector<K> > currentMatrix = matrix.get_values();
@@ -304,7 +303,7 @@ std::vector<std::vector<K> > createMatrixWithoutRow(usize_t row,  Matrix matrix)
     return (result);
 }
 
- K  Matrix::recursive_det( Matrix matrix){
+ K  Matrix::recursive_det( Matrix matrix) const{
     std::vector<std::vector<K> > matrix_values = matrix.get_values();
     usize_t size = matrix.get_rows();
     if (size == 2) {
@@ -327,12 +326,144 @@ std::vector<std::vector<K> > createMatrixWithoutRow(usize_t row,  Matrix matrix)
     }
     return result;
 }
+/*
+    La déterminant d'une matrice est une valeur qui peut être calculée pour une matrice carrée
+    et qui donne des informations sur la matrice (la surface qu'elle représente, si elle est inversible, etc.)
 
- K    Matrix::determinant(){
+    Si le déterminant est nul, la matrice est singulière (géométriquement, elle représente une surface nulle, donc elle n'a pas d'inverse)
+    et est "aplati dans un espace de dimension inférieur"
+    Le déterminant représente le volume de la matrice dans un espace de dimension supérieur
+    cf. https://www.mathsisfun.com/algebra/matrix-determinant.html
+*/
+K    Matrix::determinant() const {
     if (this->get_rows() != this->get_columns()){
         throw std::runtime_error("You can't compute determinant with a non square matrix");
     }
     return (recursive_det(*this));
+}
+
+Matrix  Matrix::identity() const{
+    usize_t rows = this->get_rows();
+    
+    if (rows != this->get_columns()){
+        throw std::runtime_error("You can't compute the identity matrix with a non square matrix");
+    }
+
+    std::vector<std::vector<K> > values(rows, std::vector<K>(rows, 0));
+    for (usize_t i = 0; i < rows; i++){
+        values[i][i] = 1;
+    }
+    return (Matrix(values));
+}
+
+Matrix   Matrix::row_echelon_form_on_pair(Matrix& mirror) const {
+    Matrix result(*this);
+
+    if (result.get_rows() == 0 || result.get_columns() == 0){
+        throw std::runtime_error("Can't compute the row echelon form of an empty matrix.");
+    }
+    if (result.get_rows() != mirror.get_rows() || result.get_columns() != mirror.get_columns()){
+        throw std::runtime_error("The mirror matrix must have the same size as the matrix.");
+    }
+
+    // form left to right and top to bottom
+    for (size_t i = 0; i < result.get_rows(); i++){
+        // find the first non-zero column
+        int column_non_empty = found_non_zero_column(i, result);
+        // if there is just zero column, stop
+        if (column_non_empty == -1)
+            return result;
+        // if the non-zero column is not in the diagonal change the index row
+        if (column_non_empty != static_cast<int>(i))
+            i = column_non_empty - 1;
+
+        // pivot is the first non-zero element of the unprocess row
+        K pivot = result.get_specific_value(i, column_non_empty);
+        // if the pivot is null and there is a non-zero element in the same column, swap the rows
+        if (pivot == 0.){
+            size_t j = i + 1;
+            while (j < result.get_rows()){
+                if (result.get_specific_value(j, column_non_empty)){
+                    result.swap_rows(i, j);
+                    mirror.swap_rows(i, j);
+                    break ;
+                }
+                j++;
+            }
+            if (j == result.get_rows())
+                continue ;
+        }
+
+        // normalize the row
+        K factor = 1 / pivot;
+        for (size_t j = 0; j < result.get_columns(); j++){
+            result.set_specific_value(i, j, result.get_specific_value(i, j) * factor);
+            mirror.set_specific_value(i, j, mirror.get_specific_value(i, j) * factor);
+        }
+
+        // zero the other rows
+        for (size_t j = i + 1; j < result.get_rows(); j++){
+            K factor_to_zero = (result.get_specific_value(j, column_non_empty)) * -1;
+            for (size_t k = 0; k < result.get_columns(); k++){
+                result.set_specific_value(j, k, result.get_specific_value(j, k) + factor_to_zero * result.get_specific_value(i, k));
+                mirror.set_specific_value(j, k, mirror.get_specific_value(j, k) + factor_to_zero * mirror.get_specific_value(i, k));
+            }
+        }
+    }
+
+    return result;
+}
+
+/*
+    From end to start of the matrix, we find the first non-zero column
+*/
+int Matrix::found_non_identity_column(size_t row_start, const Matrix& matrix) const
+{
+    usize_t columns = matrix.get_columns();
+    for (int i = columns - 1; i >= 0; i--){
+        for (int j = row_start; j >= 0; j--){
+            if (matrix.get_specific_value(j, i) != 0){
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+Matrix  Matrix::inverse() const
+{
+    Matrix  identity_matrix = this->identity();
+
+    K determinant = this->determinant();
+    if (determinant == 0){
+        throw std::runtime_error("The matrix is singular, it doesn't have an inverse");
+    }
+
+    std::vector<std::vector<K> > identity_values = identity_matrix.get_values();
+
+    // convert the current matrix to its row echelon form and apply the same operations to the identity matrix
+    Matrix row_echelon = this->row_echelon_form_on_pair(identity_matrix);
+
+    // from end to start of the matrix, we find the first non-identity column
+    // and apply the same operations to the identity matrix
+    size_t rows = row_echelon.get_rows();
+    for (int i = rows - 1; i >= 0; i--){
+        int column_non_empty = found_non_identity_column(i, row_echelon);
+        // if the remaining columns are identity columns, stop
+        if (column_non_empty == -1)
+            return identity_matrix;
+
+        // loop in order to set the diagonal to 1 and the rows above to 0
+        for (int j = i - 1; j >= 0; j--){
+            K factor_to_zero = (row_echelon.get_specific_value(j, column_non_empty)) * -1;
+            for (int k = rows - 1; k >= 0; k--){
+                row_echelon.set_specific_value(j, k, row_echelon.get_specific_value(j, k) + factor_to_zero * row_echelon.get_specific_value(i, k));
+                identity_matrix.set_specific_value(j, k, identity_matrix.get_specific_value(j, k) + factor_to_zero * identity_matrix.get_specific_value(i, k));
+            }
+        }
+    }
+
+    return identity_matrix;
 }
 
 Matrix&  Matrix::operator + (const  Matrix& add_overload)

@@ -10,7 +10,7 @@ int main(void) {
     std::cout << UNDERLINE << "TRACE: \n" << END;
     try {
         {
-            std::vector<std::vector<float> > matrix_u = {
+            std::vector<std::vector<K> > matrix_u = {
                 {1., 0.},
                 {0., 1.},
             };
@@ -18,7 +18,7 @@ int main(void) {
             std::cout << "Matrix U\n" << u << "Trace\n" << u.trace() << "\n" << std::endl;
         }
         {
-            std::vector<std::vector<float> > matrix_u = {
+            std::vector<std::vector<K> > matrix_u = {
                 {2., -5., 0.},
                 {4., 3., 7.},
                 {-2., 3., 4.},
@@ -27,7 +27,7 @@ int main(void) {
             std::cout << "Matrix U\n" << u << "Trace\n" << u.trace() << "\n" << std::endl;
         }
         {
-            std::vector<std::vector<float> > matrix_u = {
+            std::vector<std::vector<K> > matrix_u = {
                 {-2., -8., 4.},
                 {1., -23., 4.},
                 {0., 6., 4.},
