@@ -6,6 +6,8 @@
 #include <iostream>
 # include "Vector.hpp"
 
+# define PRECISION 1e-6
+
 typedef long unsigned int usize_t;
 typedef float K;
 
