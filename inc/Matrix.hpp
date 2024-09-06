@@ -5,11 +5,13 @@
 # include <ostream>
 #include <iostream>
 # include "Vector.hpp"
+#include "Complex.hpp"
 
 # define PRECISION 1e-6
 
 typedef long unsigned int usize_t;
-typedef float K;
+// typedef float K;
+typedef Complex K;
 
 class Matrix{
     public:

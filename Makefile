@@ -8,9 +8,11 @@ NAME 	= 	executable
 FULL_NAME=	executable${NB}
 SRC 	=	main_${NB}.cpp \
 			Vector.cpp \
-			Matrix.cpp
+			Matrix.cpp \
+			Complex.cpp
 HEADER	=	inc/Matrix.hpp \
-			inc/Vector.hpp
+			inc/Vector.hpp \
+			inc/Complex.hpp
 OBJS	=	$(addprefix obj/, $(SRC:.cpp=.o))
 CXXFLAGS=	-Wall -Wextra -Werror --std=c++17 -g
 

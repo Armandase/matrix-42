@@ -3,9 +3,11 @@
 
 # include <vector>
 # include <ostream>
+# include "Complex.hpp"
 
 typedef long unsigned int usize_t;
-typedef float K;
+typedef Complex K;
+// typedef float K;
 
 class Vector{
     public:
