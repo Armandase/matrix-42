@@ -1,4 +1,4 @@
-#include "Complex.hpp"
+#include "../inc/Complex.hpp"
 
 Complex::Complex()
 {
@@ -26,9 +26,19 @@ Complex::Complex(const Complex &copy){
 	Complex::operator=(copy);
 }
 
+float Complex::getReal() const
+{
+	return (this->_real);
+}
+
+float Complex::getImaginary() const
+{
+	return (this->_imaginary);
+}
+
 std::ostream& operator<<(std::ostream& os, const Complex& data)
 {
-	os << ->_real << " + " << data._imaginary << "i";
+	os << data.getReal() << " + " << data.getImaginary() << "i";
 	return (os);
 }
 
@@ -41,18 +51,18 @@ Complex& Complex::operator=(const Complex &fixed)
 
 bool Complex::operator>(const Complex& fixed)
 {
-	if (this->_real > fixed._real && this->_imaginary > fixed._imaginary
-	|| this->_real > fixed._real && this->_imaginary == fixed._imaginary
-	|| this->_real == fixed._real && this->_imaginary > fixed._imaginary)	
+	if ((this->_real > fixed._real && this->_imaginary > fixed._imaginary)
+	|| (this->_real > fixed._real && this->_imaginary == fixed._imaginary)
+	|| (this->_real == fixed._real && this->_imaginary > fixed._imaginary))	
 		return (true);
 	return (false);
 }
 
 bool Complex::operator<(const Complex& fixed)
 {
-	if (this->_real < fixed._real && this->_imaginary < fixed._imaginary
-	|| this->_real < fixed._real && this->_imaginary == fixed._imaginary
-	|| this->_real == fixed._real && this->_imaginary < fixed._imaginary)
+	if ((this->_real < fixed._real && this->_imaginary < fixed._imaginary)
+	|| (this->_real < fixed._real && this->_imaginary == fixed._imaginary)
+	|| (this->_real == fixed._real && this->_imaginary < fixed._imaginary))
 		return (true);
 	return (false);
 }
@@ -113,6 +123,17 @@ Complex& Complex::operator - (void)
 	return (*this);
 }
 
+Complex& Complex::operator + (int cplx)
+{
+	this->_real += static_cast<float>(cplx);
+	return (*this);
+}
+
+Complex& Complex::operator + (double cplx)
+{
+	this->_real += cplx;
+	return (*this);
+}
 
 Complex& Complex::operator -= (const Complex & fixed)
 {
@@ -123,29 +144,50 @@ Complex& Complex::operator -= (const Complex & fixed)
 
 Complex& Complex::operator * (const Complex& fixed)
 {
-	this->_real = this->_real * fixed._real - this->_imaginary * fixed._imaginary;
-	this->_imaginary = this->_real * fixed._imaginary + this->_imaginary * fixed._real;
+	this->_real = this->_real * fixed._real;
+	this->_imaginary = this->_imaginary * fixed._imaginary;
 	return (*this);
 }
 
 Complex& Complex::operator *= (const Complex& fixed)
 {
-	this->_real = this->_real * fixed._real - this->_imaginary * fixed._imaginary;
-	this->_imaginary = this->_real * fixed._imaginary + this->_imaginary * fixed._real;
+	this->_real = this->_real * fixed._real;
+	this->_imaginary = this->_imaginary * fixed._imaginary;
 	return (*this);
 }
 
 Complex& Complex::operator / (const Complex& fixed)
 {
-	this->_real = (this->_real * fixed._real + this->_imaginary * fixed._imaginary) / (fixed._real * fixed._real + fixed._imaginary * fixed._imaginary);
-	this->_imaginary = (this->_imaginary * fixed._real - this->_real * fixed._imaginary) / (fixed._real * fixed._real + fixed._imaginary * fixed._imaginary);
+	if (fixed._real == 0 && fixed._imaginary == 0)
+		throw std::invalid_argument("Division by zero");
+	
+	if (fixed._real == 0)
+		this->_imaginary = this->_imaginary / fixed._imaginary;
+	if (fixed._imaginary == 0)
+		this->_real = this->_real / fixed._real;
+
+	if (fixed._real != 0 && fixed._imaginary != 0)
+	{
+		this->_real = this->_real / fixed._real;
+		this->_imaginary = this->_imaginary / fixed._imaginary;
+	}
 	return (*this);
 }
 
 Complex& Complex::operator /= (const Complex& fixed)
 {
-	this->_real = (this->_real * fixed._real + this->_imaginary * fixed._imaginary) / (fixed._real * fixed._real + fixed._imaginary * fixed._imaginary);
-	this->_imaginary = (this->_imaginary * fixed._real - this->_real * fixed._imaginary) / (fixed._real * fixed._real + fixed._imaginary * fixed._imaginary);
+	if (fixed._real == 0 && fixed._imaginary == 0)
+		throw std::invalid_argument("Division by zero");
+	
+	if (fixed._real == 0)
+		this->_imaginary = this->_imaginary / fixed._imaginary;
+	if (fixed._imaginary == 0)
+		this->_real = this->_real / fixed._real;
+	if (fixed._real != 0 && fixed._imaginary != 0)
+	{
+		this->_real = this->_real / fixed._real;
+		this->_imaginary = this->_imaginary / fixed._imaginary;
+	}
 	return (*this);
 }
 
@@ -179,18 +221,15 @@ Complex Complex::operator -- (int)
 	return (ret);
 }
 
-Complex& Complex::operator pow (const Complex& fixed, int power)
+Complex& Complex::operator*(double fixed)
 {
-	this->_real = pow(a, _real);
-	this->_imaginary = pow(a, _imaginary);
+	this->_real *= fixed;
 	return (*this);
 }
 
-Complex& Complex::operator sqrt (void)
+bool Complex::operator ! (void)
 {
-	float a = this->_real;
-	float b = this->_imaginary;
-	this->_real = sqrt(a + sqrt(a * a + b * b) / 2);
-	this->_imaginary = b / abs(b) * sqrt(-a + sqrt(a * a + b * b) / 2);
-	return (*this);
+	if (this->_real == 0 && this->_imaginary == 0)
+		return (true);
+	return (false);
 }

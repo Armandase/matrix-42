@@ -2,6 +2,7 @@
 # define _FIXED_HPP_
 
 # include <iostream>
+# include <stdexcept>
 
 class Complex{
 	public:
@@ -10,28 +11,33 @@ class Complex{
 		Complex(float real, float imaginary);
 		Complex(float real);
 		Complex(const Complex &copy);
-		Complex& operator = (const Complex& fixed);
-		bool operator > (const Complex& fixed);
-		bool operator < (const Complex& fixed);
-		bool operator >= (const Complex& fixed);
-		bool operator <= (const Complex& fixed);
-		bool operator == (const Complex& fixed);
-		bool operator != (const Complex& fixed);
-		Complex& operator + (const Complex& fixed);
-		Complex& operator += (const Complex& fixed);
-		Complex& operator - (const Complex& fixed);
+		Complex& operator = (const Complex& cplx);
+		bool operator > (const Complex& cplx);
+		bool operator < (const Complex& cplx);
+		bool operator >= (const Complex& cplx);
+		bool operator <= (const Complex& cplx);
+		bool operator == (const Complex& cplx);
+		bool operator != (const Complex& cplx);
+		Complex& operator + (const Complex& cplx);
+		Complex& operator + (int cplx);
+		Complex& operator + (double cplx);
+		Complex& operator += (const Complex& cplx);
+		Complex& operator - (const Complex& cplx);
 		Complex& operator - (void);
-		Complex& operator -= (const Complex& fixed);
-		Complex& operator * (const Complex& fixed);
-		Complex& operator *= (const Complex& fixed);
-		Complex& operator / (const Complex& fixed);
-		Complex& operator /= (const Complex& fixed);
+		Complex& operator -= (const Complex& cplx);
+		Complex& operator * (const Complex& cplx);
+		Complex& operator * (double cplx);
+		Complex& operator *= (const Complex& cplx);
+		Complex& operator / (const Complex& cplx);
+		Complex& operator /= (const Complex& cplx);
 		Complex operator ++ (int);//postfix
 		Complex& operator ++ (void);//prefix
 		Complex operator -- (int);
 		Complex& operator -- (void);
-		Complex& operator pow (const Complex& fixed, int power);
-		Complex& operator sqrt (void);
+		bool operator ! (void);
+
+		float	getReal() const;
+		float	getImaginary() const;
 	private:
 		float	_real;
 		float	_imaginary;

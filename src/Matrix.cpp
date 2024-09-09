@@ -238,7 +238,7 @@ Matrix   Matrix::row_echelon_form() const {
         if (pivot == 0.){
             size_t j = i + 1;
             while (j < result.get_rows()){
-                if (result.get_specific_value(j, column_non_empty)){
+                if (!result.get_specific_value(j, column_non_empty) == false){
                     result.swap_rows(i, j);
                     break ;
                 }
@@ -250,7 +250,7 @@ Matrix   Matrix::row_echelon_form() const {
         }
 
         // normalize the row
-        K factor = 1 / pivot;
+        K factor = K(1) / pivot;
         for (size_t j = 0; j < result.get_columns(); j++){
             result.set_specific_value(i, j, result.get_specific_value(i, j) * factor);
         }
@@ -308,7 +308,6 @@ std::vector<std::vector<K> > createMatrixWithoutRow(usize_t row,  Matrix matrix)
     usize_t size = matrix.get_rows();
     if (size == 2) {
         K ad = matrix_values[0][0] * matrix_values[1][1];
-
         K bc = matrix_values[1][0] * matrix_values[0][1];
         return (ad - bc);
     }
@@ -320,7 +319,7 @@ std::vector<std::vector<K> > createMatrixWithoutRow(usize_t row,  Matrix matrix)
         Matrix  smaller_matrix(createMatrixWithoutRow(i, matrix));
         tmp = recursive_det(smaller_matrix);
 
-        cofactor = std::pow(-1, i) * matrix_values[0][i];
+        cofactor = K(std::pow(-1, i)) * matrix_values[0][i];
 
         result += tmp * cofactor;
     }
@@ -383,7 +382,7 @@ Matrix   Matrix::row_echelon_form_on_pair(Matrix& mirror) const {
         if (pivot == 0.){
             size_t j = i + 1;
             while (j < result.get_rows()){
-                if (result.get_specific_value(j, column_non_empty)){
+                if (!result.get_specific_value(j, column_non_empty) == false){
                     result.swap_rows(i, j);
                     mirror.swap_rows(i, j);
                     break ;
@@ -395,7 +394,7 @@ Matrix   Matrix::row_echelon_form_on_pair(Matrix& mirror) const {
         }
 
         // normalize the row
-        K factor = 1 / pivot;
+        K factor = K(1) / pivot;
         for (size_t j = 0; j < result.get_columns(); j++){
             result.set_specific_value(i, j, result.get_specific_value(i, j) * factor);
             mirror.set_specific_value(i, j, mirror.get_specific_value(i, j) * factor);
@@ -430,6 +429,10 @@ int Matrix::found_non_identity_column(size_t row_start, const Matrix& matrix) co
     return -1;
 }
 
+K abs(K value){
+    return (value < 0) ? -value : value;
+}
+
 Matrix  Matrix::inverse() const
 {
     Matrix  identity_matrix = this->identity();
@@ -459,11 +462,11 @@ Matrix  Matrix::inverse() const
             K factor_to_zero = (row_echelon.get_specific_value(j, column_non_empty)) * -1;
             for (int k = column_non_empty; k >= 0; k--){
                 K value_row_echelon = row_echelon.get_specific_value(j, k) + factor_to_zero * row_echelon.get_specific_value(i, k);
-                if (std::fabs(value_row_echelon) < PRECISION)
+                if (abs(value_row_echelon) < PRECISION)
                     value_row_echelon = 0.;
 
                 K value_id = identity_matrix.get_specific_value(j, k) + factor_to_zero * identity_matrix.get_specific_value(i, k);
-                if (std::fabs(value_id) < PRECISION)
+                if (abs(value_id) < PRECISION)
                     value_id = 0.; 
                 row_echelon.set_specific_value(j, k, value_row_echelon);
                 identity_matrix.set_specific_value(j, k, value_id);

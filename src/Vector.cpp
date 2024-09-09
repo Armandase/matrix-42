@@ -96,19 +96,39 @@ K   Vector::norm_1(){
     }
     return (result);
 }
+
+K  pow(K value, int power) {
+    K result = 1;
+    for (int i = 0; i < power; i++){
+        result *= value;
+    }
+    return (result);
+}
+
+K   sqrt(K value) {
+    K result = 1;
+    K tmp = 0;
+    K epsilon = 0.0001;
+    while (result - tmp > epsilon){
+        tmp = result;
+        result = (result + value / result) * 0.5;
+    }
+    return (result);
+}
+
 // norme 2 : racine carrée de la somme des carrés des coordonnées
 K   Vector::norm(){
     usize_t size = _values.size();
     K   tmp;
     K   abs = (_values[0] < 0) ? -_values[0] : _values[0];
-    K   result = std::pow(abs, 2);
+    K   result = pow(abs, 2);
 
     for (usize_t i = 1; i < size; i++){
         abs = (_values[i] < 0) ? -_values[i] : _values[i];
-        tmp = std::pow(abs, 2);
+        tmp = pow(abs, 2);
         result += tmp;
     }
-    return (std::sqrt(result));
+    return (sqrt(result));
 }
 // norme infinie : valeur absolue de la coordonnée la plus grande
 K   Vector::norm_inf(){
