@@ -62,7 +62,7 @@ int main(void) {
             std::cout << "Dot product of the result with vector v: " << cross_product(u, v).dot(v) << std::endl;
             std::cout << "Dot product should be 0 if the vectors are perpendicular" << std::endl;
         }
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }

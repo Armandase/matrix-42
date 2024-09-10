@@ -46,7 +46,7 @@ int main(void) {
 
             std::cout << "Matrix U\n" << u << "Row Echelon\n" << u.reduced_row_echelon_form() << "\n"<< std::endl;
         }
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }

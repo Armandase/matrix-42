@@ -38,7 +38,7 @@ int main(void) {
 
             std::cout << "Matrix U\n" << u << "Transpose\n" << u.transpose() << "\n"<< std::endl;
         }
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }

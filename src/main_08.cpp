@@ -35,7 +35,7 @@ int main(void) {
             Matrix u(matrix_u);
             std::cout << "Matrix U\n" << u << "Trace\n" << u.trace() << "\n" << std::endl;
         }
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }

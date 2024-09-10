@@ -68,7 +68,7 @@ int main(void) {
             std::cout << "Cosine angle: " << angle_cos(u, v) << "\n" << std::endl;
         }
         
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }

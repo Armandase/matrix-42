@@ -38,7 +38,7 @@ int main(void) {
             std::cout << "Vec A\n" << u << "Vec B\n" << v << "Result: " << u.dot(v) << "\n" << std::endl;
         }
         
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }

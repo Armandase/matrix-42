@@ -17,18 +17,19 @@ class Complex{
 		bool operator >= (const Complex& cplx);
 		bool operator <= (const Complex& cplx);
 		bool operator == (const Complex& cplx);
+		bool operator == (float cplx);
 		bool operator != (const Complex& cplx);
-		Complex& operator + (const Complex& cplx);
-		Complex& operator + (int cplx);
-		Complex& operator + (double cplx);
+		Complex operator + (const Complex& cplx);
+		Complex operator + (int cplx);
+		Complex operator + (double cplx);
 		Complex& operator += (const Complex& cplx);
-		Complex& operator - (const Complex& cplx);
-		Complex& operator - (void);
+		Complex operator - (const Complex& cplx);
+		Complex operator - (void);
 		Complex& operator -= (const Complex& cplx);
-		Complex& operator * (const Complex& cplx);
-		Complex& operator * (double cplx);
+		Complex operator * (const Complex& cplx);
+		Complex operator * (double cplx);
 		Complex& operator *= (const Complex& cplx);
-		Complex& operator / (const Complex& cplx);
+		Complex operator / (const Complex& cplx);
 		Complex& operator /= (const Complex& cplx);
 		Complex operator ++ (int);//postfix
 		Complex& operator ++ (void);//prefix

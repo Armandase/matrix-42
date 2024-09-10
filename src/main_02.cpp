@@ -52,7 +52,7 @@ int main(void) {
         Matrix m2(matrix_m2);
         std::cout << BOLD << "Matrix:\n" << END << "scalar: 0.5 between\n" << m1 << " and\n" << m2 << "Result: \n" << lerp(m1, m2, 0.5) << std::endl;
         
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }

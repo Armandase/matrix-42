@@ -100,7 +100,7 @@ int main(void) {
 
             std::cout << "Matrix U\n" << u << "Matrix V\n" << v << "Result\n" << u.mul_mat(v) << std::endl;
         }
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }

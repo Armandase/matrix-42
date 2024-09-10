@@ -20,7 +20,7 @@ int main(void) {
         std::cout << "This result multiplied by 2.5 is equal to:\n" << u << std::endl;
         u.sub(v);
         std::cout << "This result subtracted v equal to:\n" << u << std::endl;
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }
@@ -48,7 +48,7 @@ int main(void) {
         std::cout << "This result multiplied by 2.5 is equal to:\n" << m1 << std::endl;
         m1.sub(m2);
         std::cout << "This result subtracted m2 equal to:\n" << m1 << std::endl;
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }

@@ -34,7 +34,7 @@ int main(void) {
             std::cout << "∞-norm: " << u.norm_inf() << "\n" << std::endl;
         }
         
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }

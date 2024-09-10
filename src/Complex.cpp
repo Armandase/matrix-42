@@ -15,14 +15,15 @@ Complex::Complex(float real, float imaginary)
 Complex::Complex(float real)
 {
 	this->_real = real;
-	this->_imaginary = 0;
+	this->_imaginary = real;
 }
 
 Complex::~Complex()
 {
 }
 
-Complex::Complex(const Complex &copy){
+Complex::Complex(const Complex &copy)
+{
 	Complex::operator=(copy);
 }
 
@@ -44,6 +45,8 @@ std::ostream& operator<<(std::ostream& os, const Complex& data)
 
 Complex& Complex::operator=(const Complex &fixed)
 {
+	if (this == &fixed)
+		return *this;	
 	this->_real = fixed._real;
 	this->_imaginary = fixed._imaginary;
 	return *this;
@@ -95,11 +98,9 @@ bool Complex::operator!=(const Complex& fixed)
 	return (false);
 }
 
-Complex& Complex::operator + (const Complex& fixed)
+Complex Complex::operator + (const Complex& fixed)
 {
-	this->_real += fixed._real;
-	this->_imaginary += fixed._imaginary;
-	return (*this);
+	return (Complex(this->_real + fixed._real, this->_imaginary + fixed._imaginary));
 }
 
 Complex& Complex::operator += (const Complex& fixed)
@@ -109,30 +110,24 @@ Complex& Complex::operator += (const Complex& fixed)
 	return (*this);
 }
 
-Complex& Complex::operator - (const Complex& fixed)
+Complex Complex::operator - (const Complex& fixed)
 {
-	this->_real -= fixed._real;
-	this->_imaginary -= fixed._imaginary;
-	return (*this);
+	return (Complex(this->_real - fixed._real, this->_imaginary - fixed._imaginary));
 }
 
-Complex& Complex::operator - (void)
+Complex Complex::operator - (void)
 {
-	this->_real = -this->_real;
-	this->_imaginary = -this->_imaginary;
-	return (*this);
+	return (Complex(-this->_real, -this->_imaginary));
 }
 
-Complex& Complex::operator + (int cplx)
+Complex Complex::operator + (int cplx)
 {
-	this->_real += static_cast<float>(cplx);
-	return (*this);
+	return (Complex(this->_real + static_cast<float>(cplx), this->_imaginary + static_cast<float>(cplx)));
 }
 
-Complex& Complex::operator + (double cplx)
+Complex Complex::operator + (double cplx)
 {
-	this->_real += cplx;
-	return (*this);
+	return(Complex(this->_real + cplx, this->_imaginary + cplx));
 }
 
 Complex& Complex::operator -= (const Complex & fixed)
@@ -142,53 +137,51 @@ Complex& Complex::operator -= (const Complex & fixed)
 	return (*this);
 }
 
-Complex& Complex::operator * (const Complex& fixed)
+Complex Complex::operator * (const Complex& fixed)
 {
-	this->_real = this->_real * fixed._real;
-	this->_imaginary = this->_imaginary * fixed._imaginary;
-	return (*this);
+	auto tmp = this->_real;
+	auto real = this->_real * fixed._real - this->_imaginary * fixed._imaginary;
+	auto imaginary = tmp * fixed._imaginary + this->_imaginary * fixed._real;
+	return (Complex(real, imaginary));
 }
 
 Complex& Complex::operator *= (const Complex& fixed)
 {
-	this->_real = this->_real * fixed._real;
-	this->_imaginary = this->_imaginary * fixed._imaginary;
+	auto tmp = this->_real;
+	this->_real = this->_real * fixed._real - this->_imaginary * fixed._imaginary;
+	this->_imaginary = tmp * fixed._imaginary + this->_imaginary * fixed._real;
 	return (*this);
 }
 
-Complex& Complex::operator / (const Complex& fixed)
+Complex Complex::operator / (const Complex& fixed)
 {
 	if (fixed._real == 0 && fixed._imaginary == 0)
 		throw std::invalid_argument("Division by zero");
 	
-	if (fixed._real == 0)
-		this->_imaginary = this->_imaginary / fixed._imaginary;
-	if (fixed._imaginary == 0)
-		this->_real = this->_real / fixed._real;
+    float denom = fixed._real * fixed._real + fixed._imaginary * fixed._imaginary;
+	if (denom == 0)
+		throw std::invalid_argument("Division by zero");
+    float real = (this->_real * fixed._real + this->_imaginary * fixed._imaginary) / denom;
+    float imaginary = (this->_imaginary * fixed._real - this->_real * fixed._imaginary) / denom;
 
-	if (fixed._real != 0 && fixed._imaginary != 0)
-	{
-		this->_real = this->_real / fixed._real;
-		this->_imaginary = this->_imaginary / fixed._imaginary;
-	}
-	return (*this);
+    return Complex(real, imaginary);
 }
 
 Complex& Complex::operator /= (const Complex& fixed)
 {
-	if (fixed._real == 0 && fixed._imaginary == 0)
+    if (fixed._real == 0 && fixed._imaginary == 0)
+        throw std::invalid_argument("Division by zero");
+
+    float denom = fixed._real * fixed._real + fixed._imaginary * fixed._imaginary;
+	if (denom == 0)
 		throw std::invalid_argument("Division by zero");
-	
-	if (fixed._real == 0)
-		this->_imaginary = this->_imaginary / fixed._imaginary;
-	if (fixed._imaginary == 0)
-		this->_real = this->_real / fixed._real;
-	if (fixed._real != 0 && fixed._imaginary != 0)
-	{
-		this->_real = this->_real / fixed._real;
-		this->_imaginary = this->_imaginary / fixed._imaginary;
-	}
-	return (*this);
+    float new_real = (this->_real * fixed._real + this->_imaginary * fixed._imaginary) / denom;
+    float new_imaginary = (this->_imaginary * fixed._real - this->_real * fixed._imaginary) / denom;
+
+    this->_real = new_real;
+    this->_imaginary = new_imaginary;
+
+    return *this;
 }
 
 Complex Complex::operator ++ (int)
@@ -221,15 +214,20 @@ Complex Complex::operator -- (int)
 	return (ret);
 }
 
-Complex& Complex::operator*(double fixed)
+Complex Complex::operator*(double scalar)
 {
-	this->_real *= fixed;
-	return (*this);
+	return (Complex(this->_real * scalar, this->_imaginary * scalar));
 }
 
 bool Complex::operator ! (void)
 {
 	if (this->_real == 0 && this->_imaginary == 0)
+		return (true);
+	return (false);
+}
+
+bool Complex::operator == (float cplx){
+	if (this->_real == cplx)
 		return (true);
 	return (false);
 }

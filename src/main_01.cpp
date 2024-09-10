@@ -71,7 +71,7 @@ int main(void) {
             std::cout << BOLD << "Linear combination:\n" << END << linear_combination(v_vectors, v_coefs) << std::endl;
         }
 
-    } catch (std::runtime_error& e){
+    } catch (std::exception& e){
         std::cout << e.what() << std::endl; 
         return (1);
     }
