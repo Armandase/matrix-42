@@ -9,6 +9,7 @@
 // Each vector is mutilpled by it corresponding coefficients
 // The result is the sum of every vector
 // And the result's vector start with the first vector and end at the sum of every vector
+
 Vector   linear_combination(std::vector<Vector > &e_vectors, std::vector<K> &e_coefs){
     if (e_vectors.empty()){
         throw std::runtime_error("Vector's array provided as input is empty.");

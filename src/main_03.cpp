@@ -31,8 +31,8 @@ int main(void) {
             std::cout << "Vec A\n" << u << "Vec B\n" << v << "Result: " << u.dot(v) << "\n" << std::endl;
         }
         {
-            std::vector<float> vec_u = {1., 1.};
-            std::vector<float> vec_v = {-1., 1.};
+            std::vector<K> vec_u = {1., 1.};
+            std::vector<K> vec_v = {-1., 1.};
             Vector u(vec_u);
             Vector v(vec_v);
             std::cout << "Vec A\n" << u << "Vec B\n" << v << "Result: " << u.dot(v) << "\n" << std::endl;

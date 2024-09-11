@@ -6,8 +6,8 @@
 # include "Complex.hpp"
 
 typedef long unsigned int usize_t;
-typedef Complex K;
-// typedef float K;
+// typedef Complex K;
+typedef float K;
 
 class Vector{
     public:

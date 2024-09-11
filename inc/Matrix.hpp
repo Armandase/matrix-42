@@ -10,8 +10,8 @@
 # define PRECISION 1e-6
 
 typedef long unsigned int usize_t;
-// typedef float K;
-typedef Complex K;
+typedef float K;
+// typedef Complex K;
 
 class Matrix{
     public:
