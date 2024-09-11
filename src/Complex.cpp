@@ -15,7 +15,7 @@ Complex::Complex(float real, float imaginary)
 Complex::Complex(float real)
 {
 	this->_real = real;
-	this->_imaginary = real;
+	this->_imaginary = 0;
 }
 
 Complex::~Complex()
@@ -122,12 +122,12 @@ Complex Complex::operator - (void)
 
 Complex Complex::operator + (int cplx)
 {
-	return (Complex(this->_real + static_cast<float>(cplx), this->_imaginary + static_cast<float>(cplx)));
+	return (Complex(this->_real + static_cast<float>(cplx), this->_imaginary));
 }
 
 Complex Complex::operator + (double cplx)
 {
-	return(Complex(this->_real + cplx, this->_imaginary + cplx));
+	return(Complex(this->_real + cplx, this->_imaginary));
 }
 
 Complex& Complex::operator -= (const Complex & fixed)
