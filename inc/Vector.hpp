@@ -1,13 +1,16 @@
-#ifndef _VECTOR_HPP_
-# define _VECTOR_HPP_
+#pragma once
 
 # include <vector>
 # include <ostream>
 # include "Complex.hpp"
 
 typedef long unsigned int usize_t;
-// typedef Complex K;
+
+# ifdef COMPLEX
+typedef Complex K;
+# else
 typedef float K;
+# endif
 
 class Vector{
     public:
@@ -35,5 +38,3 @@ class Vector{
 };
 
 std::ostream& operator<<(std::ostream& os, const Vector& values);
-
-#endif

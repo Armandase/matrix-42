@@ -110,7 +110,7 @@ void     Matrix::sub(Matrix sub){
 Vector   Matrix::mul_vec(Vector& vec){
     usize_t size = vec.get_size();
     std::vector<K> vec_values = vec.get_values();
-    if (size != this->get_columns()){
+    if (size != this->get_rows()){
         throw std::runtime_error("Size incompatible for multiplying a vector by a matrix.");
     }
 

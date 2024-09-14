@@ -106,6 +106,11 @@ K  pow(K value, int power) {
 }
 
 K   sqrt(K value) {
+    if (value <= 0)
+        return 0;
+    else if (value == 1)
+        return 1;
+    
     K result = 1;
     K tmp = 0;
     K epsilon = 0.0001;

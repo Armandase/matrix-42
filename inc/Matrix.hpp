@@ -1,5 +1,4 @@
-#ifndef _MATRIX_HPP_
-# define _MATRIX_HPP_
+#pragma once
 
 # include <vector>
 # include <ostream>
@@ -10,8 +9,12 @@
 # define PRECISION 1e-6
 
 typedef long unsigned int usize_t;
+
+# ifdef COMPLEX
+typedef Complex K;
+# else
 typedef float K;
-// typedef Complex K;
+# endif
 
 class Matrix{
     public:
@@ -55,5 +58,3 @@ class Matrix{
 };
 
 std::ostream& operator<<(std::ostream& os, const Matrix& values);
-
-#endif

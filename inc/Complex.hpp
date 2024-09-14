@@ -1,5 +1,4 @@
-#ifndef _FIXED_HPP_
-# define _FIXED_HPP_
+#pragma once
 
 # include <iostream>
 # include <stdexcept>
@@ -45,5 +44,3 @@ class Complex{
 };
 
 std::ostream& operator<<(std::ostream& os, const Complex& data);
-
-#endif
