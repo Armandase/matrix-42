@@ -97,7 +97,11 @@ K   Vector::norm_1(){
     return (result);
 }
 
-K  pow(K value, int power) {
+static K abs(K value) {
+    return (value < 0) ? -value : value;
+}
+
+static K  pow(K value, int power) {
     K result = 1;
     for (int i = 0; i < power; i++){
         result *= value;
@@ -105,19 +109,22 @@ K  pow(K value, int power) {
     return (result);
 }
 
-K   sqrt(K value) {
-    if (value <= 0)
-        return 0;
-    else if (value == 1)
-        return 1;
+static K   sqrt(K value) {
+    if (value < 0)
+        return -1;
+    else if (value == 0 || value == 1)
+        return value;
     
-    K result = 1;
-    K tmp = 0;
-    K epsilon = 0.0001;
-    while (result - tmp > epsilon){
-        tmp = result;
-        result = (result + value / result) * 0.5;
-    }
+    K result = value;  // Initial guess
+    K previous;
+    K epsilon = std::numeric_limits<K>::epsilon();  // Tolerance
+
+    do {
+        previous = result;
+        // Newton-Raphson method formula
+        result = (result + value / result) / 2;
+    } while (abs(result - previous) > epsilon);  // Converge within epsilon tolerance
+
     return (result);
 }
 
