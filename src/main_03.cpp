@@ -24,6 +24,13 @@ int main(void) {
             std::cout << "Vec A\n" << u << "Vec B\n" << v << "Result: " << u.dot(v) << "\n" << std::endl;
         }
         {
+            std::vector<K> vec_u = {-1., 6.};
+            std::vector<K> vec_v = {3., 2.};
+            Vector u(vec_u);
+            Vector v(vec_v);
+            std::cout << "Vec A\n" << u << "Vec B\n" << v << "Result: " << u.dot(v) << "\n" << std::endl;
+        }
+        {
             std::vector<K> vec_u = {-1.52, 1.98};
             std::vector<K> vec_v = {4., 0.};
             Vector u(vec_u);
