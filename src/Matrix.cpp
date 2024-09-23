@@ -447,33 +447,19 @@ Matrix  Matrix::inverse() const
     // convert the current matrix to its row echelon form and apply the same operations to the identity matrix
     Matrix row_echelon = this->row_echelon_form_on_pair(identity_matrix);
 
-    // from end to start of the matrix, we find the first non-identity column
-    // and apply the same operations to the identity matrix
-    size_t rows = row_echelon.get_rows();
-    for (int i = rows - 1; i >= 0; i--){
-        int column_non_empty = found_non_identity_column(i, row_echelon);
-
-        // if the remaining columns are identity columns, stop
+    usize_t columns = row_echelon.get_columns();
+    for (usize_t i = row_echelon.get_rows() - 1; i > 0; i--){
+        int column_non_empty = found_non_zero_column(i, row_echelon);
         if (column_non_empty == -1)
-            return identity_matrix;
-
-        // loop in order to set the diagonal to 1 and the rows above to 0
-        for (int j = i - 1; j >= 0; j--){
+            return identity_matrix;  
+        for (usize_t j = 0; j < i; j++){
             K factor_to_zero = (row_echelon.get_specific_value(j, column_non_empty)) * -1;
-            for (int k = column_non_empty; k >= 0; k--){
-                K value_row_echelon = row_echelon.get_specific_value(j, k) + factor_to_zero * row_echelon.get_specific_value(i, k);
-                if (abs(value_row_echelon) < PRECISION)
-                    value_row_echelon = 0.;
-
-                K value_id = identity_matrix.get_specific_value(j, k) + factor_to_zero * identity_matrix.get_specific_value(i, k);
-                if (abs(value_id) < PRECISION)
-                    value_id = 0.; 
-                row_echelon.set_specific_value(j, k, value_row_echelon);
-                identity_matrix.set_specific_value(j, k, value_id);
+            for (usize_t k = 0; k < columns; k++){
+                row_echelon.set_specific_value(j, k, row_echelon.get_specific_value(j, k) + factor_to_zero * row_echelon.get_specific_value(i, k));
+                identity_matrix.set_specific_value(j, k, identity_matrix.get_specific_value(j, k) + factor_to_zero * identity_matrix.get_specific_value(i, k));
             }
         }
     }
-
     return identity_matrix;
 }
 

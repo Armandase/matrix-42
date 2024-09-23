@@ -101,7 +101,7 @@ static K abs(K value) {
     return (value < 0) ? -value : value;
 }
 
-static K  pow(K value, int power) {
+K  pow(K value, int power) {
     K result = 1;
     for (int i = 0; i < power; i++){
         result *= value;
@@ -109,7 +109,7 @@ static K  pow(K value, int power) {
     return (result);
 }
 
-static K   sqrt(K value) {
+K   sqrt(K value) {
     if (value < 0)
         return -1;
     else if (value == 0 || value == 1)
