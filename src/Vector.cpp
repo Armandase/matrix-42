@@ -1,4 +1,5 @@
 #include "../inc/Vector.hpp"
+#include "../inc/Matrix.hpp"
 #include <stdexcept>
 #include <cmath>
 
@@ -156,6 +157,45 @@ K   Vector::norm_inf(){
     }
     return (result);
 }
+
+K Vector::average() const{
+    K ret = 0.;
+    const usize_t size = this->get_size();
+    K scalar = 1. / size;
+
+    for (usize_t i = 0; i < size; i++){
+        ret += (_values[i] * scalar);
+    }
+    return ret;
+}
+
+// COV  ∑ (xi - X) (yi - Y)/N
+K Vector::covariance(const Vector& x_tmp, const Vector& y){
+    Vector x = x_tmp;
+    K ret = 0.;
+    usize_t size = x.get_size();
+    if (size != y.get_size() || size == 0)
+        return 0.;
+    K mean_x = x.average();
+    K mean_y = y.average();
+
+    for (usize_t i = 0; i < size; i++){
+        ret += ((x.get_values()[i] - mean_x) * (y.get_values()[i] - mean_y));
+    }
+    return ret / size;
+}
+
+Matrix Vector::covariance_matrix(const Vector& vec){
+    Matrix ret({{0., 0.},
+                {0., 0.}});
+
+    ret.set_specific_value(0, 0, this->covariance(*this, *this));
+    ret.set_specific_value(1, 1, this->covariance(vec, vec));
+    ret.set_specific_value(0, 1, this->covariance(*this, vec));
+    ret.set_specific_value(1, 0, this->covariance(vec, *this));
+    return ret;
+}
+
 
 Vector& Vector::operator + (const Vector& add_overload)
 {

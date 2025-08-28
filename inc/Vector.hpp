@@ -6,10 +6,12 @@
 
 typedef long unsigned int usize_t;
 
+class Matrix;
+
 # ifdef COMPLEX
 typedef Complex K;
 # else
-typedef float K;
+typedef double K;
 # endif
 
 class Vector{
@@ -29,11 +31,16 @@ class Vector{
         K    norm_1();
         K    norm();
         K    norm_inf();
+        K    average() const;
+
+        Matrix covariance_matrix(const Vector& vec);
 
         Vector& operator + (const Vector&);
 		Vector& operator - (const Vector&);
 		Vector& operator * (const K);
     private:
+        K covariance(const Vector& x, const Vector& y);
+
         std::vector<K> _values;
 };
 

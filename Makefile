@@ -1,4 +1,4 @@
-NB = 00
+NB = stats
 ifndef NB
 	$(error NB is not set. Please provide NB, e.g., `make NB=01`)
 	quit
