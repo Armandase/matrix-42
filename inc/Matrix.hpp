@@ -3,6 +3,8 @@
 # include <vector>
 # include <ostream>
 #include <iostream>
+# include <tuple>
+# include <functional>
 # include "Vector.hpp"
 #include "Complex.hpp"
 
@@ -13,7 +15,7 @@ typedef long unsigned int usize_t;
 # ifdef COMPLEX
 typedef Complex K;
 # else
-typedef float K;
+typedef double K;
 # endif
 
 class Matrix{
@@ -27,6 +29,7 @@ class Matrix{
         void    set_specific_value (size_t i, size_t j, K value);
         size_t  get_rows() const;
         size_t  get_columns() const;
+        size_t  get_nb_values() const;
         void    swap_columns(usize_t column1, usize_t column2);
         void    swap_rows(usize_t row1, usize_t row2);
 
@@ -46,6 +49,7 @@ class Matrix{
         Matrix  inverse() const;
         usize_t rank() const;
     
+        std::tuple<std::vector<Vector>, std::vector<double> > eigh() const;
 
         Matrix& operator + (const Matrix&); 
 		Matrix& operator - (const Matrix&);

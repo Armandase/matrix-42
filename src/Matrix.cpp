@@ -44,6 +44,11 @@ size_t  Matrix::get_columns() const{
     return this->_values.begin()->size();
 }
 
+size_t  Matrix::get_nb_values() const{
+    return this->get_columns() * this->get_rows();        
+}
+
+
 void Matrix::set_specific_value (size_t i, size_t j, K value){
     if (i >= this->get_rows() || j >= this->get_columns()){
         throw std::runtime_error("impossible to set a value outside the matrix");
@@ -481,6 +486,36 @@ usize_t Matrix::rank() const
     return rank;
 }
 
+std::tuple<std::vector<Vector>, std::vector<double> > Matrix::eigh() const{
+    // pour calculer les valeurs propres il faut résoudre
+    // A * v = λ * v
+    // ou A est la matrice, v est un vecteur propre et λ un valeur propre
+    //{\displaystyle \lambda ={\frac {{\rm {Tr}}(A)\pm {\sqrt {{\rm {Tr}}(A)^{2}-4\,{\rm {det}}(A)}}}{2}}.}
+    double trace = this->trace();
+    double det = this->determinant();
+
+    auto formula = [](double trace, double det, std::function<double(double, double)> op){
+        double lambda = op(trace,  
+            std::sqrt(
+                std::pow(trace, 2) - 4 * det));
+        lambda /= 2;
+        return lambda;
+    };
+
+    auto pos = [](double a, double b){
+        return a + b;
+    };
+    auto neg = [](double a, double b){
+        return a - b;
+    };
+
+    double lambdaPos = formula(trace, det, pos); 
+    double lambdaNeg = formula(trace, det, neg); 
+    std::cout << "Pos lambda:" << lambdaPos << std::endl;
+    std::cout << "Neg lambda:" << lambdaNeg << std::endl;
+    return std::make_tuple(std::vector<Vector>(), std::vector<double>());
+}
+
 Matrix&  Matrix::operator + (const  Matrix& add_overload)
 {
 	this->add(add_overload);
@@ -504,7 +539,6 @@ K Matrix::get_specific_value (int i, int j) const{
     }
     return _values[i][j];
 }
-
 
  std::ostream& operator<<(std::ostream& os, const  Matrix& values)
 {
