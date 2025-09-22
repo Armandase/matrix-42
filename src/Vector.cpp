@@ -18,6 +18,14 @@ usize_t Vector::get_size() const{
     return _values.size();
 }
 
+K Vector::get_value(size_t i) const {
+    if (i > this->get_size()){
+        throw std::runtime_error("impossible to get a value outside the vector");
+    }
+    return _values[i];
+}
+
+
 void    Vector::set_values(std::vector<K>& vec)
 {
    this-> _values = vec;
@@ -167,6 +175,22 @@ K Vector::average() const{
         ret += (_values[i] * scalar);
     }
     return ret;
+}
+
+// VAR  ∑ (x - x̄)²/N
+K Vector::variance_population() const{
+    K ret = 0;
+    usize_t size = this->get_size();
+
+    if (size == 0)
+        return 0;
+
+    K avg = this->average();
+
+    for (usize_t i = 0; i < size; i++){
+        ret += pow((this->get_value(i) - avg), 2);
+    }
+    return ret / size;
 }
 
 // COV  ∑ (xi - X) (yi - Y)/N

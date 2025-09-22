@@ -19,6 +19,7 @@ class Vector{
         Vector(std::vector<K>);
 
         std::vector<K> get_values() const;
+        K get_value(size_t i) const;
         usize_t get_size() const;
         void    set_values(std::vector<K>& vec);
         void    set_specific_value (size_t i, K value);
@@ -33,6 +34,7 @@ class Vector{
         K    norm_inf();
         K    average() const;
 
+        K variance_population() const;
         Matrix covariance_matrix(const Vector& vec);
 
         Vector& operator + (const Vector&);
