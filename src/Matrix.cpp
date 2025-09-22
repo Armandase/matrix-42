@@ -19,6 +19,15 @@ Matrix::Matrix(std::vector<std::vector<K> > numbers){
     _values = numbers;
 }
 
+Matrix::Matrix(size_t size_x, size_t size_y){
+    if (size_x <= 0 || size_y <= 0){
+        throw std::runtime_error("Wrong matrix size definition.");
+    }
+    std::vector<K> rows(size_x, 0);
+    _values = std::vector<std::vector<K>>(size_y, rows);
+    this->reset();
+}
+
 Matrix::Matrix(const Matrix& matrix)
 {
     _values = matrix.get_values();
@@ -69,6 +78,17 @@ void Matrix::swap_rows(usize_t row1, usize_t row2){
         K tmp = this->get_specific_value(row1, i);
         this->set_specific_value(row1, i, this->get_specific_value(row2, i));
         this->set_specific_value(row2, i, tmp);
+    }
+}
+
+void Matrix::reset(){
+    size_t rows = this->get_rows();
+    size_t cols = this->get_columns();
+
+    for (usize_t i = 0; i < rows; i++){
+        for (usize_t j = 0; j < cols; j++){
+            this->set_specific_value(i, j, 0.);
+        }
     }
 }
 

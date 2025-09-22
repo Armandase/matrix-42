@@ -10,6 +10,16 @@ Vector::Vector(std::vector<K> numbers){
     _values = numbers;
 }
 
+
+Vector::Vector(size_t size){
+    if (size <= 0){
+        throw std::runtime_error("Wrong provided size to create vector.");
+    }
+
+    _values = std::vector<K>(size, 0);
+}
+
+
 std::vector<K> Vector::get_values() const{
     return _values;
 }
@@ -220,32 +230,71 @@ K Vector::std(bool sample) const{
 }
 
 
+// // COV  ∑ (xi - X) (yi - Y)/N
+// K Vector::covariance(const Vector& x_tmp, const Vector& y){
+//     Vector x = x_tmp;
+//     K ret = 0.;
+//     usize_t size = x.get_size();
+//     if (size != y.get_size() || size == 0)
+//         return 0.;
+//     K mean_x = x.average();
+//     K mean_y = y.average();
+
+//     for (usize_t i = 0; i < size; i++){
+//         ret += ((x.get_values()[i] - mean_x) * (y.get_values()[i] - mean_y));
+//     }
+//     return ret / size;
+// }
+
 // COV  ∑ (xi - X) (yi - Y)/N
-K Vector::covariance(const Vector& x_tmp, const Vector& y){
-    Vector x = x_tmp;
+K Vector::covariance(const Vector& y, bool sample) const {
     K ret = 0.;
-    usize_t size = x.get_size();
+    usize_t size = this->get_size();
     if (size != y.get_size() || size == 0)
         return 0.;
-    K mean_x = x.average();
+    K mean_x = this->average();
     K mean_y = y.average();
 
     for (usize_t i = 0; i < size; i++){
-        ret += ((x.get_values()[i] - mean_x) * (y.get_values()[i] - mean_y));
+        ret += ((this->get_values()[i] - mean_x) * (y.get_values()[i] - mean_y));
     }
+
+    if (sample == true)
+        return ret / (size - 1);
     return ret / size;
 }
 
-Matrix Vector::covariance_matrix(const Vector& vec){
-    Matrix ret({{0., 0.},
-                {0., 0.}});
+// Matrix Vector::covariance_matrix(const std::vector<Vector>& list_vec, bool sample){
+//     size_t list_size = list_vec.size();
+//     Matrix ret(list_size + 1, list_size + 1);
 
-    ret.set_specific_value(0, 0, this->covariance(*this, *this));
-    ret.set_specific_value(1, 1, this->covariance(vec, vec));
-    ret.set_specific_value(0, 1, this->covariance(*this, vec));
-    ret.set_specific_value(1, 0, this->covariance(vec, *this));
-    return ret;
-}
+
+//     Vector a(this->get_size());
+//     Vector b(this->get_size());
+
+//     for (size_t i = 0; i < list_size; i++){
+//         for (size_t j = 0; j < list_size; j++){
+//             size_t vec_size = list_vec[i].get_size();
+
+//             if (this->get_size() != vec_size){
+//                 throw std::runtime_error("Can't compute covariance matrix with differents vector sizes.");
+//             }
+//             K value = 0;
+//             a = list_vec[i];
+//             b = list_vec[j];
+//             if (i == 0){
+//                 a = *this;
+//             }
+//             if (j == 0){
+//                 b = *this;
+//             }
+//             value = a.covariance(b, sample);
+//             std::cout << "Set: " << value << " to " << j << ";" << i << std::endl;
+//             ret.set_specific_value(j, i, value);
+//         }
+//     }
+//     return ret;
+// }
 
 
 Vector& Vector::operator + (const Vector& add_overload)
@@ -274,4 +323,24 @@ std::ostream& operator<<(std::ostream& os, const Vector& values)
         os << "[" << vector[i] << "]\n";
     }
 	return (os);
+}
+
+
+Matrix covariance_matrix(const std::vector<Vector>& list_vec, bool sample){
+    size_t list_size = list_vec.size();
+    Matrix ret(list_size, list_size);
+
+    for (size_t i = 0; i < list_size; i++){
+        for (size_t j = 0; j < list_size; j++){
+            // size_t vec_size = list_vec[i].get_size();
+
+            // if (() != vec_size){
+                // throw std::runtime_error("Can't compute covariance matrix with differents vector sizes.");
+            // }
+            K value = list_vec[i].covariance(list_vec[j], sample);
+            std::cout << "Set: " << value << " to " << j << ";" << i << std::endl;
+            ret.set_specific_value(j, i, value);
+        }
+    }
+    return ret;
 }

@@ -17,6 +17,7 @@ typedef double K;
 class Vector{
     public:
         Vector(std::vector<K>);
+        Vector(size_t size);
 
         std::vector<K> get_values() const;
         K get_value(size_t i) const;
@@ -37,15 +38,19 @@ class Vector{
         K variance_population() const;
         K variance_sample() const;
         K std(bool sample=false) const;
-        Matrix covariance_matrix(const Vector& vec);
-
+        K covariance(const Vector& y, bool sample=false) const;
+        // Matrix covariance_matrix(const Vector& vec);
+        
+        
+        
         Vector& operator + (const Vector&);
 		Vector& operator - (const Vector&);
 		Vector& operator * (const K);
-    private:
-        K covariance(const Vector& x, const Vector& y);
-
+        private:
+        // K covariance(const Vector& x, const Vector& y);
+        
         std::vector<K> _values;
-};
-
+    };
+    
 std::ostream& operator<<(std::ostream& os, const Vector& values);
+Matrix covariance_matrix(const std::vector<Vector>& list_vec, bool sample=false);

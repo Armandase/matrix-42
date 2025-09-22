@@ -21,6 +21,7 @@ typedef double K;
 class Matrix{
     public:
         Matrix(std::vector<std::vector<K> >);
+        Matrix(size_t size_x, size_t size_y);
         Matrix(const Matrix& matrix);
         Matrix operator = (const Matrix& matrix);
 
@@ -32,6 +33,7 @@ class Matrix{
         size_t  get_nb_values() const;
         void    swap_columns(usize_t column1, usize_t column2);
         void    swap_rows(usize_t row1, usize_t row2);
+        void    reset();
 
         void    sub(Matrix);
         void    add(Matrix);
