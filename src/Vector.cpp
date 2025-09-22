@@ -193,6 +193,33 @@ K Vector::variance_population() const{
     return ret / size;
 }
 
+// VAR  ∑ (x - x̄)²/N -1
+K Vector::variance_sample() const{
+    K ret = 0;
+    usize_t size = this->get_size();
+
+    if (size == 0)
+        return 0;
+
+    K avg = this->average();
+
+    for (usize_t i = 0; i < size; i++){
+        ret += pow((this->get_value(i) - avg), 2);
+    }
+    return ret / (size - 1);
+}
+
+K Vector::std(bool sample) const{
+    K variance = 0;
+    if (sample == true){
+        variance = this->variance_sample();
+    } else {
+        variance = this->variance_population();
+    }
+    return (sqrt(variance));
+}
+
+
 // COV  ∑ (xi - X) (yi - Y)/N
 K Vector::covariance(const Vector& x_tmp, const Vector& y){
     Vector x = x_tmp;

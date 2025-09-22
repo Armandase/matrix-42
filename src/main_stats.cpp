@@ -7,10 +7,14 @@ int main(void) {
     std::cout << "Stats: \n";
     try {
         {
-            std::vector<K> vec = {2, 3, 4};
+            std::vector<K> vec = {2, 2.5, 3, 3.5, 4, 7};
             Vector x(vec);
 
-            std::cout << "x:" << x << " var:"<< x.variance_population() << std::endl;
+            std::cout << "x:" << x << " var pop:"<< x.variance_population() << std::endl;
+            std::cout << " var sample:"<< x.variance_sample() << std::endl;
+            std::cout << " avg :"<< x.average() << std::endl;
+            std::cout << " std pop:"<< x.std() << std::endl;
+            std::cout << " std sample:"<< x.std(true) << std::endl;
         }
         // {
 

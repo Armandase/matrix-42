@@ -35,6 +35,8 @@ class Vector{
         K    average() const;
 
         K variance_population() const;
+        K variance_sample() const;
+        K std(bool sample=false) const;
         Matrix covariance_matrix(const Vector& vec);
 
         Vector& operator + (const Vector&);
