@@ -2,3 +2,4 @@ inc/*
 .vscode/
 *.o
 obj/
+executable*
