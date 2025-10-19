@@ -9,11 +9,13 @@ FULL_NAME=	executable${NB}
 SRC 	=	Complex.cpp \
 			Vector.cpp \
 			Matrix.cpp \
-			main_${NB}.cpp
+			utils.cpp 
+MAIN	=	exemple/main_${NB}.cpp
 HEADER	=	inc/Complex.hpp \
 			inc/Vector.hpp \
+			inc/utils.hpp \
 			inc/Matrix.hpp
-OBJS	=	$(addprefix obj/, $(SRC:.cpp=.o))
+OBJS	=	$(addprefix obj/, $(SRC:.cpp=.o)) obj/$(MAIN:.cpp=.o)
 CXXFLAGS=	-Wall -Wextra -Werror --std=c++17 -g
 
 ifeq (${NB}, complex)
@@ -28,6 +30,10 @@ ${FULL_NAME}	:	${OBJS} ${HEADER}
 
 
 obj/%.o: src/%.cpp $(HEADER)
+	@mkdir -p $(@D)
+	${CXX} ${CXXFLAGS} -c $< -o $@
+
+obj/exemple/%.o: exemple/%.cpp $(HEADER)
 	@mkdir -p $(@D)
 	${CXX} ${CXXFLAGS} -c $< -o $@
 

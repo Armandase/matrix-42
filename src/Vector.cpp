@@ -102,8 +102,52 @@ K   Vector::dot(Vector dot){
     return result;
 }
 
-// La norme d'un vecteur est une mesure de sa longueur / taille.
+/*
+cos(θ) = 1 : colinéaires et pointent dans la même direction (angle de 0°).
+cos⁡(θ) = 0 : orthogonaux (angle de 90°).
+cos(θ) = −1: colinéaires mais pointent dans des directions opposées (angle de 180°).
+*/
+K   Vector::angle_cos(Vector &v){
+    if (this->get_size() != v.get_size()){
+        throw std::runtime_error("Vectors given as input have a different size");
+    }
 
+    K dot = this->dot(v);
+    K u_norm = this->norm();
+    K v_norm = v.norm();
+    
+    if (u_norm == 0 || v_norm == 0){
+        throw std::runtime_error("A vector provided has a null norm");
+    }
+    return (dot / (u_norm * v_norm));
+}
+
+/*
+Le produit renvoie un vecteur perpendiculaire aux deux vecteurs en entrée.
+/!\ pas commutatif
+*/
+Vector   Vector::cross_product(Vector &v){
+    if (this->get_size() != 3 || this->get_size() != v.get_size()){
+        throw std::runtime_error("Vectors given as input have a wrong size");
+    }
+    std::vector<K> result_vec;
+
+    K y1z2 = this->get_value(1) * v.get_value(2);
+    K z1y2 = this->get_value(2) * v.get_value(1);
+
+    K z1x2 = this->get_value(2) * v.get_value(0);
+    K x1z2 = this->get_value(0) * v.get_value(2);
+
+    K x1y2 = this->get_value(0) * v.get_value(1);
+    K y1x2 = this->get_value(1) * v.get_value(0);
+
+    result_vec.push_back(y1z2 - z1y2);
+    result_vec.push_back(z1x2 - x1z2);
+    result_vec.push_back(x1y2 - y1x2);
+    return (Vector (result_vec));
+}
+
+// La norme d'un vecteur est une mesure de sa longueur / taille.
 // norme 1 : somme des valeurs absolues des coordonnées 
 K   Vector::norm_1(){
     usize_t size = _values.size();
@@ -343,4 +387,75 @@ Matrix covariance_matrix(const std::vector<Vector>& list_vec, bool sample){
         }
     }
     return ret;
+}
+
+// Each vector is mutilpled by it corresponding coefficients
+// The result is the sum of every vector
+// And the result's vector start with the first vector and end at the sum of every vector
+Vector   linear_combination(std::vector<Vector > &e_vectors, std::vector<K> &e_coefs){
+    if (e_vectors.empty()){
+        throw std::runtime_error("Vector's array provided as input is empty.");
+    }
+    usize_t nb_vector = e_vectors.size();
+    usize_t vec_size = e_vectors[0].get_size();
+    if (nb_vector != e_coefs.size()){
+        throw std::runtime_error("Arrays provided as input are not of the same size.");
+    }
+    for (usize_t i = 0; i < nb_vector; i++){
+        if (vec_size != e_vectors[i].get_size()){
+            throw std::runtime_error("Vectors provided as input are not of the same size.");
+        }
+        e_vectors[i].scl(e_coefs[i]);
+        if (i > 0){
+            e_vectors[0].add(e_vectors[i]);
+        }
+    }
+    return (e_vectors[0]);
+}
+
+/*
+cos(θ) = 1 : colinéaires et pointent dans la même direction (angle de 0°).
+cos⁡(θ) = 0 : orthogonaux (angle de 90°).
+cos(θ) = −1: colinéaires mais pointent dans des directions opposées (angle de 180°).
+*/
+K   angle_cos(Vector &u, Vector &v){
+    if (u.get_size() != v.get_size()){
+        throw std::runtime_error("Vectors given as input have a different size");
+    }
+
+    K dot = u.dot(v);
+    K u_norm = u.norm();
+    K v_norm = v.norm();
+    
+    if (u_norm == 0 || v_norm == 0){
+        throw std::runtime_error("A vector provided has a null norm");
+    }
+    return (dot / (u_norm * v_norm));
+}
+
+/*
+Le produit renvoie un vecteur perpendiculaire aux deux vecteurs en entrée.
+/!\ pas commutatif
+*/
+Vector   cross_product(Vector &u, Vector &v){
+    if (u.get_size() != 3 || u.get_size() != v.get_size()){
+        throw std::runtime_error("Vectors given as input have a wrong size");
+    }
+    std::vector<K> result_vec;
+    std::vector<K> u_vec = u.get_values();
+    std::vector<K> v_vec = v.get_values();
+
+    K y1z2 = u_vec[1] * v_vec[2];
+    K z1y2 = u_vec[2] * v_vec[1];
+
+    K z1x2 = u_vec[2] * v_vec[0];
+    K x1z2 = u_vec[0] * v_vec[2];
+
+    K x1y2 = u_vec[0] * v_vec[1];
+    K y1x2 = u_vec[1] * v_vec[0];
+
+    result_vec.push_back(y1z2 - z1y2);
+    result_vec.push_back(z1x2 - x1z2);
+    result_vec.push_back(x1y2 - y1x2);
+    return (Vector (result_vec));
 }

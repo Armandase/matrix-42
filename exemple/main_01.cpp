@@ -6,30 +6,6 @@
 #define UNDERLINE "\e[4m"
 #define END "\e[0m"
 
-// Each vector is mutilpled by it corresponding coefficients
-// The result is the sum of every vector
-// And the result's vector start with the first vector and end at the sum of every vector
-
-Vector   linear_combination(std::vector<Vector > &e_vectors, std::vector<K> &e_coefs){
-    if (e_vectors.empty()){
-        throw std::runtime_error("Vector's array provided as input is empty.");
-    }
-    usize_t nb_vector = e_vectors.size();
-    usize_t vec_size = e_vectors[0].get_size();
-    if (nb_vector != e_coefs.size()){
-        throw std::runtime_error("Arrays provided as input are not of the same size.");
-    }
-    for (usize_t i = 0; i < nb_vector; i++){
-        if (vec_size != e_vectors[i].get_size()){
-            throw std::runtime_error("Vectors provided as input are not of the same size.");
-        }
-        e_vectors[i].scl(e_coefs[i]);
-        if (i > 0){
-            e_vectors[0].add(e_vectors[i]);
-        }
-    }
-    return (e_vectors[0]);
-}
 
 int main(void) {
     // VECTOR

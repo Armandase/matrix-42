@@ -2,29 +2,11 @@
 
 #include "../inc/Vector.hpp"
 #include "../inc/Matrix.hpp"
+#include "../inc/utils.hpp"
 
 #define BOLD "\e[1m"
 #define UNDERLINE "\e[4m"
 #define END "\e[0m"
-
-
-// Linear interpolation between two values
-// u: first value
-// v: second value
-// t: interpolation factor
-// return: interpolate's value
-// (a value which starts at the origin and ends at a percentage between u and v scaled by t)
-template <typename V>
-V   lerp(V u, V v, float t){
-    if (t < 0 || t > 1){
-        throw std::runtime_error("t must be 0 >= t <= 1");
-    } else if (t == 0){
-        return u;
-    } else if (t == 1){
-        return v;
-    }
-    return (u * (1 - t) + v * t);
-}
 
 int main(void) {
     std::cout << UNDERLINE << "LINEAR INTERPOLATION: \n" << END;
