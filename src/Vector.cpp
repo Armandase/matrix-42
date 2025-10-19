@@ -274,22 +274,6 @@ K Vector::std(bool sample) const{
 }
 
 
-// // COV  ∑ (xi - X) (yi - Y)/N
-// K Vector::covariance(const Vector& x_tmp, const Vector& y){
-//     Vector x = x_tmp;
-//     K ret = 0.;
-//     usize_t size = x.get_size();
-//     if (size != y.get_size() || size == 0)
-//         return 0.;
-//     K mean_x = x.average();
-//     K mean_y = y.average();
-
-//     for (usize_t i = 0; i < size; i++){
-//         ret += ((x.get_values()[i] - mean_x) * (y.get_values()[i] - mean_y));
-//     }
-//     return ret / size;
-// }
-
 // COV  ∑ (xi - X) (yi - Y)/N
 K Vector::covariance(const Vector& y, bool sample) const {
     K ret = 0.;
@@ -308,38 +292,18 @@ K Vector::covariance(const Vector& y, bool sample) const {
     return ret / size;
 }
 
-// Matrix Vector::covariance_matrix(const std::vector<Vector>& list_vec, bool sample){
-//     size_t list_size = list_vec.size();
-//     Matrix ret(list_size + 1, list_size + 1);
+Vector Vector::projection(const Vector& a){
+    std::vector<K> result_vec = this->_values;
+    Vector res(result_vec);
+    double scalar = 0;
 
 
-//     Vector a(this->get_size());
-//     Vector b(this->get_size());
+    scalar = this->dot(a);
+    scalar /= pow(this->norm(), 2);
 
-//     for (size_t i = 0; i < list_size; i++){
-//         for (size_t j = 0; j < list_size; j++){
-//             size_t vec_size = list_vec[i].get_size();
-
-//             if (this->get_size() != vec_size){
-//                 throw std::runtime_error("Can't compute covariance matrix with differents vector sizes.");
-//             }
-//             K value = 0;
-//             a = list_vec[i];
-//             b = list_vec[j];
-//             if (i == 0){
-//                 a = *this;
-//             }
-//             if (j == 0){
-//                 b = *this;
-//             }
-//             value = a.covariance(b, sample);
-//             std::cout << "Set: " << value << " to " << j << ";" << i << std::endl;
-//             ret.set_specific_value(j, i, value);
-//         }
-//     }
-//     return ret;
-// }
-
+    res = res * scalar;
+    return res;
+}
 
 Vector& Vector::operator + (const Vector& add_overload)
 {

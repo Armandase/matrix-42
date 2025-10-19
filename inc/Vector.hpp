@@ -36,6 +36,7 @@ class Vector{
         K    norm();
         K    norm_inf();
         K    average() const;
+        Vector projection(const Vector& a);
 
         K variance_population() const;
         K variance_sample() const;
