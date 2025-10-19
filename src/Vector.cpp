@@ -147,6 +147,23 @@ Vector   Vector::cross_product(Vector &v){
     return (Vector (result_vec));
 }
 
+Matrix   Vector::outer_product(Vector &v){
+    size_t size_a = this->get_size();
+    size_t size_b = v.get_size();
+    Matrix res(size_a, size_b);
+    double a = 0;
+    double b = 0;
+    
+    for (size_t i = 0; i < size_a; i++){
+        a = this->get_value(i);
+        for (size_t j = 0; j < size_b; j++){
+            b = v.get_value(j);
+            res.set_specific_value(i, j, a * b);
+        }
+    }
+    return res;
+}
+
 // La norme d'un vecteur est une mesure de sa longueur / taille.
 // norme 1 : somme des valeurs absolues des coordonnées 
 K   Vector::norm_1(){

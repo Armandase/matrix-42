@@ -32,6 +32,7 @@ class Vector{
         K    dot(Vector);
         K    angle_cos(Vector &v);
         Vector   cross_product(Vector &v);
+        Matrix   outer_product(Vector &v);
         K    norm_1();
         K    norm();
         K    norm_inf();

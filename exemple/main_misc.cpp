@@ -6,14 +6,16 @@ int main(void) {
     std::cout << "eigen values & eigen vectors: \n";
     try {
         {
-            std::vector<K>vec_u = {
-                {3., 1.},
+            std::vector<K>vec_a = {
+                {1., 2., 3., 4.},
             };
-            Vector u(vec_u);
+            Vector a(vec_a);
 
-            Vector v({1., 3.});
+            Vector b(
+                {5., 6., 7., 8.}
+            );
             
-            std::cout << "Vec U\n" << u << "proj\n" << u.projection(v) << "\n"<< std::endl;
+            std::cout << "Vec a\n" << a << "outer\n" << a.outer_product(b) << "\n"<< std::endl;
         }
         // {
         //     std::vector<std::vector<K> > matrix_u = {
