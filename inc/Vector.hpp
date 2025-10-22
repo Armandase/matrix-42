@@ -37,7 +37,8 @@ class Vector{
         K    norm();
         K    norm_inf();
         K    average() const;
-        Vector projection(const Vector& a);
+        Vector  projection(const Vector& a);
+        Vector  rotation(double theta, bool degre=false);
 
         K variance_population() const;
         K variance_sample() const;

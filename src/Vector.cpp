@@ -322,6 +322,37 @@ Vector Vector::projection(const Vector& a){
     return res;
 }
 
+Vector  Vector::rotation(double theta, bool degre){
+    if (degre){
+        theta *= (M_PI/180);
+    }
+
+    if (this->get_size() == 2){
+        Matrix r({{std::cos(theta), -std::sin(theta)},
+        {std::sin(theta), std::cos(theta)}});
+        
+        return r.mul_vec(*this);
+    } else if (this->get_size() == 3){
+        Matrix r_x({
+            {1, 0, 0},
+            {0, std::cos(theta), -std::sin(theta)},
+            {0, std::sin(theta), std::cos(theta)}});
+        Matrix r_y({
+            {std::cos(theta), 0, std::sin(theta)},
+            {0, 1, 0},
+            {-std::sin(theta), 0, std::cos(theta)}});
+        Matrix r_z({
+            {std::cos(theta), -std::sin(theta), 0},
+            {std::sin(theta), std::cos(theta), 0},
+            {0, 0, 1}});
+        Matrix r = r_z.mul_mat(r_y).mul_mat(r_x);
+        return r.mul_vec(*this);
+    } else {
+        throw std::runtime_error("Rotation can only be applied on 2D or 3D vector.");
+    }
+    return *this;
+}
+
 Vector& Vector::operator + (const Vector& add_overload)
 {
 	this->add(add_overload);

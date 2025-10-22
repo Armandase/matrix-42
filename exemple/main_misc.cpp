@@ -5,17 +5,26 @@
 int main(void) {
     std::cout << "eigen values & eigen vectors: \n";
     try {
+        // {
+        //     std::vector<K>vec_a = {
+        //         {1., 2., 3., 4.},
+        //     };
+        //     Vector a(vec_a);
+
+        //     Vector b(
+        //         {5., 6., 7., 8.}
+        //     );
+            
+        //     std::cout << "Vec a\n" << a << "outer\n" << a.outer_product(b) << "\n"<< std::endl;
+        // }
         {
             std::vector<K>vec_a = {
-                {1., 2., 3., 4.},
+                {2., 1.},
             };
             Vector a(vec_a);
 
-            Vector b(
-                {5., 6., 7., 8.}
-            );
-            
-            std::cout << "Vec a\n" << a << "outer\n" << a.outer_product(b) << "\n"<< std::endl;
+            double theta =  90;
+            std::cout << "Vec a\n" << a << "outer\n" << a.rotation(theta, true) << "\n"<< std::endl;
         }
         // {
         //     std::vector<std::vector<K> > matrix_u = {

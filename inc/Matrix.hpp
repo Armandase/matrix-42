@@ -38,8 +38,9 @@ class Matrix{
         void    sub(Matrix);
         void    add(Matrix);
         void    scl(K);
-        Matrix  mul_mat(Matrix& matrix);
+
         Vector  mul_vec(Vector& vec);
+        Matrix  mul_mat(Matrix& matrix);
         K       trace() const;
         Matrix  transpose() const;
         Matrix  row_echelon_form() const;

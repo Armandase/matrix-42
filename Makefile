@@ -13,7 +13,6 @@ SRC 	=	Complex.cpp \
 MAIN	=	exemple/main_${NB}.cpp
 HEADER	=	inc/Complex.hpp \
 			inc/Vector.hpp \
-			inc/utils.hpp \
 			inc/Matrix.hpp
 OBJS	=	$(addprefix obj/, $(SRC:.cpp=.o)) obj/$(MAIN:.cpp=.o)
 CXXFLAGS=	-Wall -Wextra -Werror --std=c++17 -g
