@@ -30,10 +30,24 @@ usize_t Vector::get_size() const{
 }
 
 K Vector::get_value(size_t i) const {
-    if (i > this->get_size()){
+    if (i >= this->get_size()){
         throw std::runtime_error("impossible to get a value outside the vector");
     }
     return _values[i];
+}
+
+K& Vector::operator[](usize_t index) {
+    if (index >= _values.size()) {
+        throw std::runtime_error("impossible to get a value outside the vector");
+    }
+    return _values[index];
+}
+
+const K& Vector::operator[](usize_t index) const {
+    if (index >= _values.size()) {
+        throw std::runtime_error("impossible to get a value outside the vector");
+    }
+    return _values[index];
 }
 
 
@@ -165,6 +179,21 @@ Matrix   Vector::outer_product(Vector &v){
     return res;
 }
 
+// element wise product
+Vector  Vector::hadamard_product(const Vector &v) const{
+    size_t size = this->get_size();
+    if (size != v.get_size()){
+        throw std::runtime_error("Hadamard product: Vectors sizes must match");
+    }
+
+    Vector res(size);
+    for (size_t i = 0; i < size; i++){
+        res.set_specific_value(i, this->get_value(i) * v.get_value(i));
+    }
+    return res;
+}
+
+
 // La norme d'un vecteur est une mesure de sa longueur / taille.
 // norme 1 : somme des valeurs absolues des coordonnées 
 K   Vector::norm_1(){
@@ -249,6 +278,31 @@ K Vector::average() const{
     return ret;
 }
 
+Vector  Vector::sort() const{
+    Vector sorted = *this;
+    std::sort(sorted._values.begin(), sorted._values.end());
+    return sorted;
+}
+
+Vector  Vector::as_rank() const{
+    usize_t size = this->get_size();
+    Vector sorted = this->sort();
+    Vector ranks(size);
+
+    for (usize_t i = 0; i < size; i++){
+        K value = this->get_value(i);
+        for (usize_t j = 0; j < size; j++){
+            if (sorted.get_value(j) == value){
+                ranks.set_specific_value(i, j + 1);
+                break;
+            }
+        }
+    }
+    return ranks;
+}
+
+
+
 // VAR  ∑ (x - x̄)²/N
 K Vector::variance_population() const{
     K ret = 0;
@@ -309,6 +363,39 @@ K Vector::covariance(const Vector& y, bool sample) const {
         return ret / (size - 1);
     return ret / size;
 }
+
+// correl = (E(XY) - E(X)E(Y)) 
+//          ------------------
+//  SQRT(E(X²)-E(X)²) SQRT(E(Y²)-E(Y)²))
+K Vector::pearson_correlation(const Vector& y) const{
+    K mean_x = this->average();
+    K mean_y = y.average();
+
+    Vector xy = Vector(this->get_size());
+    for (size_t i = 0; i < this->get_size(); i++){
+        double val = this->get_value(i) * y.get_value(i);
+        xy.set_specific_value(i, val);
+    }
+
+    K numerator =  xy.average() - mean_x * mean_y;
+
+    Vector y_squared = y.hadamard_product(y);
+    Vector x_squared = this->hadamard_product(*this);
+    K denominator = sqrt(x_squared.average() - pow(mean_x, 2)) * sqrt(y_squared.average() - pow(mean_y, 2));
+
+    return numerator / denominator;
+}
+
+// covariance (rang(x), rang(y)) / (std(rank(x))*std(rank(y))
+K Vector::spearman_correlation(const Vector& y) const{
+    Vector rank_x = this->as_rank();
+    Vector rank_y = y.as_rank();
+
+    K cov = this->covariance(rank_y, true);
+    return cov / (rank_x.std(true), rank_y.std(true));
+}
+
+
 
 Vector Vector::projection(const Vector& a){
     std::vector<K> result_vec = this->_values;

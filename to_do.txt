@@ -2,5 +2,4 @@ PCA
 SVD
 orthonomalisation
 rotations matrices -> fix pour 3D
-Kronecker product
 correlation peasron et spearman

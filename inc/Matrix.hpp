@@ -43,7 +43,7 @@ class Matrix{
         void    scl(K);
 
         Vector  mul_vec(Vector& vec);
-        Matrix  mul_mat(Matrix& matrix);
+        Matrix  mul_mat(const Matrix& matrix);
         K       trace() const;
         Matrix  transpose() const;
         Matrix  row_echelon_form() const;
@@ -61,6 +61,7 @@ class Matrix{
         Matrix& operator + (const Matrix&); 
 		Matrix& operator - (const Matrix&);
 		Matrix& operator * (const K);
+		Matrix operator * (const Matrix&);
 
     private:
         K   recursive_det(Matrix matrix) const;

@@ -204,7 +204,7 @@ Vector   Matrix::mul_vec(Vector& vec){
     cf. https://www.mathsisfun.com/algebra/matrix-multiplying.html
 */
 
-Matrix   Matrix::mul_mat(Matrix& matrix){
+Matrix   Matrix::mul_mat(const Matrix& matrix){
     if (this->get_columns() != matrix.get_rows()){
         throw std::runtime_error("Size incompatible for multiplying two matrices.");
     }
@@ -616,6 +616,12 @@ Matrix&  Matrix::operator + (const  Matrix& add_overload)
 	this->scl(scalar);
 	return (*this);
 }
+
+Matrix Matrix::operator * (const Matrix& dot){
+    return (this->mul_mat(dot));
+}
+
+
 K Matrix::get_specific_value (int i, int j) const{
     if (i < 0 || i >= static_cast<int>(this->get_rows()) || j < 0 || j >= static_cast<int>(this->get_columns())){
         throw std::runtime_error("impossible to get a value outside the matrix");
