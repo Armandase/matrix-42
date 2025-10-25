@@ -28,12 +28,15 @@ class Matrix{
         std::vector<std::vector<K> > get_values() const;
         K       get_specific_value (int i, int j) const;
         void    set_specific_value (size_t i, size_t j, K value);
+        std::vector<K> get_row(int i) const;
         size_t  get_rows() const;
         size_t  get_columns() const;
         size_t  get_nb_values() const;
         void    swap_columns(usize_t column1, usize_t column2);
         void    swap_rows(usize_t row1, usize_t row2);
         void    reset();
+        void    append_column(const Matrix& b);
+        void    append_row(const Matrix& b);
 
         void    sub(Matrix);
         void    add(Matrix);
@@ -51,6 +54,7 @@ class Matrix{
         Matrix  row_echelon_form_on_pair(Matrix& mirror) const;
         Matrix  inverse() const;
         usize_t rank() const;
+        Matrix  kronecker_product(const Matrix& other) const;
     
         std::tuple<std::vector<Vector>, std::vector<double> > eigh() const;
 

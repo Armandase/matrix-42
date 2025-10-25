@@ -43,6 +43,10 @@ std::vector<std::vector<K> > Matrix::get_values() const{
     return _values;
 }
 
+std::vector<K> Matrix::get_row(int i) const{
+    return (this->_values[i]);
+}
+
 size_t  Matrix::get_rows() const{
     return this->_values.size();
 }
@@ -89,6 +93,42 @@ void Matrix::reset(){
         for (usize_t j = 0; j < cols; j++){
             this->set_specific_value(i, j, 0.);
         }
+    }
+}
+
+void    Matrix::append_column(const Matrix& b){
+    size_t nb_rows = this->get_rows();
+
+    if (b.get_rows() != nb_rows){
+        throw std::runtime_error("To append a column, matrices must have the same number of rows");
+    }
+
+    size_t nb_new_columns = b.get_columns();
+    if (nb_new_columns == 0){
+        return ;
+    }
+
+    for (size_t i = 0; i < nb_rows; i++){
+        std::vector<K> row_to_append = b.get_row(i);
+        this->_values[i].insert(this->_values[i].end(), row_to_append.begin(), row_to_append.end());
+    }
+}
+
+void    Matrix::append_row(const Matrix& b){
+    size_t nb_cols = this->get_columns();
+
+    if (b.get_columns() != nb_cols){
+        throw std::runtime_error("To append a column, matrices must have the same number of rows");
+    }
+
+    size_t nb_new_rows = b.get_rows();
+    if (nb_new_rows == 0){
+        return ;
+    }
+
+    for (size_t i = 0; i < nb_new_rows; i++){
+        std::vector<K> row_to_append = b.get_row(i);
+        this->_values.push_back(row_to_append);
     }
 }
 
@@ -505,6 +545,29 @@ usize_t Matrix::rank() const
     }
     return rank;
 }
+
+Matrix  Matrix::kronecker_product(const Matrix& other) const{
+    double scalar = 0;
+    Matrix result(1,1);
+    
+    for (size_t i = 0; i < this->get_rows(); i++){
+        Matrix copy = other;
+        Matrix line = copy * this->get_specific_value(i, 0);
+        for (size_t j = 1; j < this->get_columns(); j++){
+            Matrix newBlock(other);
+            scalar = this->get_specific_value(i, j);
+            newBlock.scl(scalar);
+            line.append_column(newBlock);
+        }
+        if (i == 0){
+            result = line;
+        }else{
+            result.append_row(line);
+        }
+    }
+    return result;
+}
+
 
 std::tuple<std::vector<Vector>, std::vector<double> > Matrix::eigh() const{
     // pour calculer les valeurs propres il faut résoudre

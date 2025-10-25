@@ -2,6 +2,7 @@
 #include "../inc/Matrix.hpp"
 #include <stdexcept>
 #include <cmath>
+#include <limits>
 
 Vector::Vector(std::vector<K> numbers){
     if (numbers.size() < 2){
@@ -322,35 +323,65 @@ Vector Vector::projection(const Vector& a){
     return res;
 }
 
-Vector  Vector::rotation(double theta, bool degre){
+Vector  Vector::rotation2d(double theta, bool degre){
     if (degre){
         theta *= (M_PI/180);
     }
 
-    if (this->get_size() == 2){
-        Matrix r({{std::cos(theta), -std::sin(theta)},
-        {std::sin(theta), std::cos(theta)}});
-        
-        return r.mul_vec(*this);
-    } else if (this->get_size() == 3){
-        Matrix r_x({
-            {1, 0, 0},
-            {0, std::cos(theta), -std::sin(theta)},
-            {0, std::sin(theta), std::cos(theta)}});
-        Matrix r_y({
-            {std::cos(theta), 0, std::sin(theta)},
-            {0, 1, 0},
-            {-std::sin(theta), 0, std::cos(theta)}});
-        Matrix r_z({
-            {std::cos(theta), -std::sin(theta), 0},
-            {std::sin(theta), std::cos(theta), 0},
-            {0, 0, 1}});
-        Matrix r = r_z.mul_mat(r_y).mul_mat(r_x);
-        return r.mul_vec(*this);
-    } else {
-        throw std::runtime_error("Rotation can only be applied on 2D or 3D vector.");
+    if (this->get_size() != 2){
+        throw std::runtime_error("3 rotation can only be applied on 3D vector.");
     }
-    return *this;
+
+    Matrix r({{std::cos(theta), -std::sin(theta)},
+    {std::sin(theta), std::cos(theta)}});
+        
+    return r.mul_vec(*this);
+
+}
+
+Vector  Vector::rotation3d(double theta, const Vector& axis, bool degre){
+    if (this->get_size() != 3 || axis.get_size() != 3){
+        throw std::runtime_error("3D rotation can only be applied on 3D vectors with a 3D axis.");
+    }
+
+    Vector axis_unit(axis.get_values());
+    K axis_norm = axis_unit.norm();
+    if (axis_norm == 0){
+        throw std::runtime_error("Rotation axis can't have a null norm.");
+    }
+    axis_unit.scl(1. / axis_norm);
+
+    double angle = theta;
+    if (degre){
+        angle *= (M_PI / 180.0);
+    }
+
+    double axis_x = static_cast<double>(axis_unit.get_value(0));
+    double axis_y = static_cast<double>(axis_unit.get_value(1));
+    double axis_z = static_cast<double>(axis_unit.get_value(2));
+
+    double theta_x = angle * axis_x;
+    double theta_y = angle * axis_y;
+    double theta_z = angle * axis_z;
+
+    Matrix r_x({
+        {1, 0, 0},
+        {0, std::cos(theta_x), -std::sin(theta_x)},
+        {0, std::sin(theta_x), std::cos(theta_x)}});
+    Matrix r_y({
+        {std::cos(theta_y), 0, std::sin(theta_y)},
+        {0, 1, 0},
+        {-std::sin(theta_y), 0, std::cos(theta_y)}});
+    Matrix r_z({
+        {std::cos(theta_z), -std::sin(theta_z), 0},
+        {std::sin(theta_z), std::cos(theta_z), 0},
+        {0, 0, 1}});
+
+    Vector res = *this;
+    res = r_x.mul_vec(res);
+    res = r_y.mul_vec(res);
+    res = r_z.mul_vec(res);
+    return res;
 }
 
 Vector& Vector::operator + (const Vector& add_overload)
