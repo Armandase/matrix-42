@@ -5,17 +5,29 @@
 int main(void) {
     std::cout << "Misc: \n";
     // try {
-        {
-            std::vector<K>vec_a = {
-                {-1 ,-2 ,-3 ,-4},
-            };
-            Vector a(vec_a);
+        // {
+        //     std::vector<K>vec_a = {
+        //         {-1 ,-2 ,-3 ,-4},
+        //     };
+        //     Vector a(vec_a);
 
-            Vector b(
-                {1 ,2 ,3 ,6}
-            );
+        //     Vector b(
+        //         {1 ,2 ,3 ,6}
+        //     );
             
-            std::cout << "Vec a\n" << a << "pearson correl\n" << a.spearman_correlation(b) << "\n"<< std::endl;
+        //     std::cout << "Vec a\n" << a << "pearson correl\n" << a.spearman_correlation(b) << "\n"<< std::endl;
+        // }
+        {
+            std::vector<std::vector<K> > mat_a = {
+                {2.5,  2.4,  0.5},
+                {0.5,  0.7, -0.1},
+                {2.2,  2.9,  0.3},
+                {1.9,  2.2,  0.0},
+                {3.1,  3.0,  0.7}
+            };
+            Matrix a(mat_a);
+            
+            std::cout << "Vec a\n" << a << "mahalanobis dist\n" << a.mahalanobis_distance() << "\n"<< std::endl;
         }
         // {
         //     std::vector<K>vec_a = {

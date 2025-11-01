@@ -25,6 +25,7 @@ class Vector{
         usize_t get_size() const;
         void    set_values(std::vector<K>& vec);
         void    set_specific_value (size_t i, K value);
+        Matrix  as_matrix() const;
         
         void    sub(Vector);
         void    add(Vector);
@@ -51,8 +52,6 @@ class Vector{
         K covariance(const Vector& y, bool sample=false) const;
         K pearson_correlation(const Vector& y) const;
         K spearman_correlation(const Vector& y) const;
-        K mahalanobis_distance(const Vector& y)const;
-
         
         Vector& operator + (const Vector&);
 		Vector& operator - (const Vector&);

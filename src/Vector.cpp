@@ -62,6 +62,13 @@ void    Vector::set_specific_value (size_t i, K value){
     _values[i] = value;
 }
 
+Matrix  Vector::as_matrix() const{
+    std::vector<std::vector<K>> raw_mat = {this->get_values()};
+    Matrix mat(raw_mat);
+    return mat;
+}
+
+
 void    Vector::add(Vector add){
     std::vector<K> add_values = add.get_values();
     usize_t size = add_values.size();
@@ -99,6 +106,7 @@ void    Vector::scl(K scalar){
     négatif => les vecteurs pointent dans des directions opposées (angle obtus).
 
     Somme des produits des coordonnées des vecteurs
+    Formula:  $$\mathbf{a} \cdot \mathbf{b} = \sum_{i=1}^{n} a_{i}b_{i}$$
 */
 K   Vector::dot(Vector dot){
     usize_t size = _values.size();
@@ -121,6 +129,8 @@ K   Vector::dot(Vector dot){
 cos(θ) = 1 : colinéaires et pointent dans la même direction (angle de 0°).
 cos⁡(θ) = 0 : orthogonaux (angle de 90°).
 cos(θ) = −1: colinéaires mais pointent dans des directions opposées (angle de 180°).
+
+Formula: $$\cos(\theta) = \frac{\mathbf{a} \cdot \mathbf{b}}{||\mathbf{a}|| \cdot ||\mathbf{b}||}$$
 */
 K   Vector::angle_cos(Vector &v){
     if (this->get_size() != v.get_size()){
@@ -140,6 +150,7 @@ K   Vector::angle_cos(Vector &v){
 /*
 Le produit renvoie un vecteur perpendiculaire aux deux vecteurs en entrée.
 /!\ pas commutatif
+Formula: $$\mathbf{a} \times \mathbf{b} = \parallel a\parallel \parallel b \parallel \sin(\theta) \mathbf{n}$$
 */
 Vector   Vector::cross_product(Vector &v){
     if (this->get_size() != 3 || this->get_size() != v.get_size()){
@@ -162,6 +173,8 @@ Vector   Vector::cross_product(Vector &v){
     return (Vector (result_vec));
 }
 
+// Produit externe (outer product) de deux vecteurs
+// Formula:  $$\mathbf{a} \otimes \mathbf{b} = \mathbf{a} \mathbf{b}^{T}$$
 Matrix   Vector::outer_product(Vector &v){
     size_t size_a = this->get_size();
     size_t size_b = v.get_size();
@@ -180,6 +193,7 @@ Matrix   Vector::outer_product(Vector &v){
 }
 
 // element wise product
+// Formula:  $$(\mathbf{a} \circ \mathbf{b})_{i} = a_{i}b_{i}$$
 Vector  Vector::hadamard_product(const Vector &v) const{
     size_t size = this->get_size();
     if (size != v.get_size()){
@@ -196,6 +210,7 @@ Vector  Vector::hadamard_product(const Vector &v) const{
 
 // La norme d'un vecteur est une mesure de sa longueur / taille.
 // norme 1 : somme des valeurs absolues des coordonnées 
+// Formula:  $$||\mathbf{a}||_{1} = \sum_{i=1}^{n} |a_{i}|$$
 K   Vector::norm_1(){
     usize_t size = _values.size();
     K   result = (_values[0] < 0) ? -_values[0] : _values[0];
@@ -239,6 +254,7 @@ K   sqrt(K value) {
 }
 
 // norme 2 : racine carrée de la somme des carrés des coordonnées
+// Formula:  $$||\mathbf{a}||_{2} = \sqrt{\sum_{i=1}^{n} a_{i}^{2}}$$
 K   Vector::norm(){
     usize_t size = _values.size();
     K   tmp;
@@ -252,7 +268,9 @@ K   Vector::norm(){
     }
     return (sqrt(result));
 }
+
 // norme infinie : valeur absolue de la coordonnée la plus grande
+// Formula:  $$||\mathbf{a}||_{\infty} = \max_{i} |a_{i}|$$
 K   Vector::norm_inf(){
     usize_t size = _values.size();
     K   abs = (_values[0] < 0) ? -_values[0] : _values[0];
@@ -267,6 +285,8 @@ K   Vector::norm_inf(){
     return (result);
 }
 
+// Moyenne des valeurs du vecteur
+// Formula:  $$\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_{i}$$
 K Vector::average() const{
     K ret = 0.;
     const usize_t size = this->get_size();
@@ -301,9 +321,7 @@ Vector  Vector::as_rank() const{
     return ranks;
 }
 
-
-
-// VAR  ∑ (x - x̄)²/N
+// Formula:  $$\sigma^{2} = \frac{1}{N} \sum_{i=1}^{N} (x_{i} - \bar{x})^{2}$$
 K Vector::variance_population() const{
     K ret = 0;
     usize_t size = this->get_size();
@@ -319,7 +337,8 @@ K Vector::variance_population() const{
     return ret / size;
 }
 
-// VAR  ∑ (x - x̄)²/N -1
+// Variance avec correction de Bessel
+// Formula:  $$s^{2} = \frac{1}{N - 1} \sum_{i=1}^{N} (x_{i} - \bar{x})^{2}$$
 K Vector::variance_sample() const{
     K ret = 0;
     usize_t size = this->get_size();
@@ -335,6 +354,8 @@ K Vector::variance_sample() const{
     return ret / (size - 1);
 }
 
+// Ecart type
+// Formula:  $$\sigma = \sqrt{\sigma^{2}}$$
 K Vector::std(bool sample) const{
     K variance = 0;
     if (sample == true){
@@ -346,7 +367,7 @@ K Vector::std(bool sample) const{
 }
 
 
-// COV  ∑ (xi - X) (yi - Y)/N
+// Formula:  $$\mathrm{cov}(X, Y) = \frac{1}{N} \sum_{i=1}^{N} (X_{i} - \bar{X})(Y_{i} - \bar{Y})$$
 K Vector::covariance(const Vector& y, bool sample) const {
     K ret = 0.;
     usize_t size = this->get_size();
@@ -363,10 +384,11 @@ K Vector::covariance(const Vector& y, bool sample) const {
         return ret / (size - 1);
     return ret / size;
 }
+ 
 
-// correl = (E(XY) - E(X)E(Y)) 
-//          ------------------
-//  SQRT(E(X²)-E(X)²) SQRT(E(Y²)-E(Y)²))
+// Formula: $$r = \frac{E(XY) - E(X)E(Y)}{\sqrt{E(X^{2}) - E(X)^{2}} \sqrt{E(Y^{2}) - E(Y)^{2}}}$$
+
+// where E(X) is the average of X
 K Vector::pearson_correlation(const Vector& y) const{
     K mean_x = this->average();
     K mean_y = y.average();
@@ -386,16 +408,18 @@ K Vector::pearson_correlation(const Vector& y) const{
     return numerator / denominator;
 }
 
-// covariance (rang(x), rang(y)) / (std(rank(x))*std(rank(y))
+// Formula: $$\rho = \frac{\mathrm{cov}(\mathrm{rank}(X), \mathrm{rank}(Y))}{\sigma_{\mathrm{rank}(X)} \sigma_{\mathrm{rank}(Y)}}$$
+
 K Vector::spearman_correlation(const Vector& y) const{
     Vector rank_x = this->as_rank();
     Vector rank_y = y.as_rank();
 
     K cov = this->covariance(rank_y, true);
-    return cov / (rank_x.std(true), rank_y.std(true));
+    return cov / (rank_x.std(true) * rank_y.std(true));
 }
 
-// projection: proj b A = (A • B / |B|²) * B
+// Formula: $$\mathrm{proj}_{\mathbf{b}} \mathbf{a} = \left( \frac{\mathbf{a} \cdot \mathbf{b}}{||\mathbf{b}||^{2}} \right) \mathbf{b}$$
+
 Vector Vector::projection(const Vector& a){
     std::vector<K> result_vec = this->_values;
     Vector res(result_vec);
@@ -470,13 +494,6 @@ Vector  Vector::rotation3d(double theta, const Vector& axis, bool degre){
     return res;
 }
 
-// Formula: Dm = sqrt((x - μ)Transposed Σ^-1)
-// Math: $$f(x) = \int_0^x e^{-t^2} dt$$
-K Vector::mahalanobis_distance(const Vector& y)const{
-
-}
-
-
 Vector& Vector::operator + (const Vector& add_overload)
 {
 	this->add(add_overload);
@@ -507,19 +524,34 @@ std::ostream& operator<<(std::ostream& os, const Vector& values)
 
 
 Matrix covariance_matrix(const std::vector<Vector>& list_vec, bool sample){
-    size_t list_size = list_vec.size();
+    usize_t list_size = list_vec.size();
+    if (list_size == 0){
+        throw std::runtime_error("Covariance matrix requires at least one vector.");
+    }
+
+    usize_t vec_size = list_vec[0].get_size();
+    if (vec_size == 0){
+        throw std::runtime_error("Vectors must contain at least one value.");
+    }
+    if (sample && vec_size < 2){
+        throw std::runtime_error("Sample covariance requires vectors with at least two values.");
+    }
+
+    for (usize_t idx = 1; idx < list_size; idx++){
+        if (list_vec[idx].get_size() != vec_size){
+            throw std::runtime_error("Can't compute covariance matrix with different vector sizes.");
+        }
+    }
+
     Matrix ret(list_size, list_size);
 
-    for (size_t i = 0; i < list_size; i++){
-        for (size_t j = 0; j < list_size; j++){
-            // size_t vec_size = list_vec[i].get_size();
-
-            // if (() != vec_size){
-                // throw std::runtime_error("Can't compute covariance matrix with differents vector sizes.");
-            // }
+    for (usize_t i = 0; i < list_size; i++){
+        for (usize_t j = i; j < list_size; j++){
             K value = list_vec[i].covariance(list_vec[j], sample);
-            std::cout << "Set: " << value << " to " << j << ";" << i << std::endl;
-            ret.set_specific_value(j, i, value);
+            ret.set_specific_value(i, j, value);
+            if (i != j){
+                ret.set_specific_value(j, i, value);
+            }
         }
     }
     return ret;

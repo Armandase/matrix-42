@@ -4,11 +4,11 @@
 
 Matrix::Matrix(std::vector<std::vector<K> > numbers){
     usize_t rows = numbers.size();
-    if (rows < 2){
+    if (rows < 1){
         throw std::runtime_error("Wrong number of rows");
     }
     usize_t columns = numbers[0].size();
-    if (columns < 2){
+    if (columns < 1){
         throw std::runtime_error("Wrong number of columns");
     }
     for (usize_t i = 0; i < rows; i++){
@@ -67,6 +67,28 @@ void Matrix::set_specific_value (size_t i, size_t j, K value){
         throw std::runtime_error("impossible to set a value outside the matrix");
     }
     _values[i][j] = value;
+}
+
+void    Matrix::set_row_specific_value (size_t i, std::vector<K> row_values){
+    if (i >= this->get_rows()){
+        throw std::runtime_error("impossible to set a row outside the matrix");
+    }
+    if (row_values.size() != this->get_columns()){
+        throw std::runtime_error("impossible to set a row with a different size");
+    }
+    _values[i] = row_values;
+}
+
+void    Matrix::set_column_specific_value (size_t j, std::vector<K> column_values){
+    if (j >= this->get_columns()){
+        throw std::runtime_error("impossible to set a column outside the matrix");
+    }
+    if (column_values.size() != this->get_rows()){
+        throw std::runtime_error("impossible to set a column with a different size");
+    }
+    for (usize_t i = 0; i < this->get_rows(); i++){
+        _values[i][j] = column_values[i];
+    }
 }
 
 void    Matrix::swap_columns(usize_t column1, usize_t column2){
@@ -203,7 +225,6 @@ Vector   Matrix::mul_vec(Vector& vec){
     (ligne 1 de M1 dot colonne 1 de M2)
     cf. https://www.mathsisfun.com/algebra/matrix-multiplying.html
 */
-
 Matrix   Matrix::mul_mat(const Matrix& matrix){
     if (this->get_columns() != matrix.get_rows()){
         throw std::runtime_error("Size incompatible for multiplying two matrices.");
@@ -225,6 +246,10 @@ Matrix   Matrix::mul_mat(const Matrix& matrix){
 
     return result;
 };
+
+Matrix   Matrix::dot(const Matrix& matrix){
+    return mul_mat(matrix);
+}
 
 /*
     La trace d'une matrice est la somme des éléments de la diagonale principale
@@ -566,6 +591,78 @@ Matrix  Matrix::kronecker_product(const Matrix& other) const{
         }
     }
     return result;
+}
+
+K       Matrix::columns_mean(usize_t j) const{
+    usize_t rows = this->get_rows();
+    K sum = 0;
+    for (usize_t i = 0; i < rows; i++){
+        sum += this->get_specific_value(i, j);
+    }
+    return sum / K(rows);
+}
+
+
+K       Matrix::rows_mean(usize_t i) const{
+    usize_t columns = this->get_columns();
+    K sum = 0;
+    for (usize_t j = 0; j < columns; j++){
+        sum += this->get_specific_value(i, j);
+    }
+    return sum / K(columns);
+}
+
+
+// Formula: $$\Sigma=\frac{1}{n-1}\sum_{i=1}^{n}(x_{i}-\mu)(x_{i}-\mu)^{T}$$
+
+Matrix  Matrix::covariance_matrix() const{
+    usize_t rows = this->get_rows();
+    usize_t columns = this->get_columns();
+
+    Matrix cov_matrix(columns, columns);
+    for (usize_t i = 0; i < rows; i++){
+        for (usize_t j = 0; j < columns; j++){
+            K diff_ij = this->get_specific_value(i, j) - this->columns_mean(j);
+            for (usize_t k = 0; k < columns; k++){
+                K diff_ik = this->get_specific_value(i, k) - this->columns_mean(k);
+                K current_value = cov_matrix.get_specific_value(j, k);
+                cov_matrix.set_specific_value(j, k, current_value + diff_ij * diff_ik);
+            }
+        }
+    }
+    cov_matrix.scl(1.0 / K(rows - 1));
+    return cov_matrix;
+}
+
+
+// Formula: $$D_{m}=\sqrt{(x - \mu)^{T}\Sigma^{-1}(x-\mu)}$$
+Vector Matrix::mahalanobis_distance()const{
+    Matrix cov_matrix = this->covariance_matrix();
+    cov_matrix = cov_matrix.inverse();
+
+    std::cout << "Covariance matrix in Mahalanobis distance computation:\n" << cov_matrix << std::endl;
+
+    Vector mean_vector(this->get_columns());
+    for (usize_t j = 0; j < this->get_columns(); j++){
+        mean_vector.set_specific_value(j, this->columns_mean(j));
+    }
+    
+    Matrix substract = *this;
+    for (usize_t i = 0; i < this->get_rows(); i++){
+        Vector row_vector = substract.get_row(i);
+        row_vector.sub(mean_vector);
+        substract.set_row_specific_value(i, row_vector.get_values());
+    }
+    Matrix transposed = substract.transpose();
+    Matrix mult = transposed.mul_mat(cov_matrix);
+    Matrix final = mult.mul_mat(substract);
+
+    std::cout << "Final matrix in Mahalanobis distance computation:\n" << final << std::endl;
+    Vector distances(this->get_rows());
+    for (usize_t i = 0; i < this->get_rows(); i++){
+        distances.set_specific_value(i, std::sqrt(final.get_specific_value(i, i)));
+    }
+    return distances;
 }
 
 

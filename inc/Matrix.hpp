@@ -28,6 +28,8 @@ class Matrix{
         std::vector<std::vector<K> > get_values() const;
         K       get_specific_value (int i, int j) const;
         void    set_specific_value (size_t i, size_t j, K value);
+        void    set_row_specific_value (size_t i, std::vector<K> row_values);
+        void    set_column_specific_value (size_t j, std::vector<K> column_values);
         std::vector<K> get_row(int i) const;
         size_t  get_rows() const;
         size_t  get_columns() const;
@@ -44,6 +46,7 @@ class Matrix{
 
         Vector  mul_vec(Vector& vec);
         Matrix  mul_mat(const Matrix& matrix);
+        Matrix  dot(const Matrix& matrix);
         K       trace() const;
         Matrix  transpose() const;
         Matrix  row_echelon_form() const;
@@ -55,6 +58,10 @@ class Matrix{
         Matrix  inverse() const;
         usize_t rank() const;
         Matrix  kronecker_product(const Matrix& other) const;
+        K       columns_mean(usize_t j) const;
+        K       rows_mean(usize_t i) const;
+        Matrix  covariance_matrix() const;
+        Vector  mahalanobis_distance()const;
     
         std::tuple<std::vector<Vector>, std::vector<double> > eigh() const;
 
