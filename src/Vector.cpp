@@ -395,8 +395,7 @@ K Vector::spearman_correlation(const Vector& y) const{
     return cov / (rank_x.std(true), rank_y.std(true));
 }
 
-
-
+// projection: proj b A = (A • B / |B|²) * B
 Vector Vector::projection(const Vector& a){
     std::vector<K> result_vec = this->_values;
     Vector res(result_vec);
