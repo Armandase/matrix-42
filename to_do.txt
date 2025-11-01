@@ -2,4 +2,4 @@ PCA
 SVD
 orthonomalisation
 rotations matrices -> fix pour 3D
-correlation peasron et spearman
+Distance de Mahalanobis

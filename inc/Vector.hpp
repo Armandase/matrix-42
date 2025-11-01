@@ -51,6 +51,7 @@ class Vector{
         K covariance(const Vector& y, bool sample=false) const;
         K pearson_correlation(const Vector& y) const;
         K spearman_correlation(const Vector& y) const;
+        K mahalanobis_distance(const Vector& y)const;
 
         
         Vector& operator + (const Vector&);

@@ -470,6 +470,13 @@ Vector  Vector::rotation3d(double theta, const Vector& axis, bool degre){
     return res;
 }
 
+// Formula: Dm = sqrt((x - μ)Transposed Σ^-1)
+// Math: $$f(x) = \int_0^x e^{-t^2} dt$$
+K Vector::mahalanobis_distance(const Vector& y)const{
+
+}
+
+
 Vector& Vector::operator + (const Vector& add_overload)
 {
 	this->add(add_overload);
