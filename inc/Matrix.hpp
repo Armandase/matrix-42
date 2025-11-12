@@ -60,8 +60,8 @@ class Matrix{
         Matrix  kronecker_product(const Matrix& other) const;
         K       columns_mean(usize_t j) const;
         K       rows_mean(usize_t i) const;
-        Matrix  covariance_matrix() const;
-        Vector  mahalanobis_distance()const;
+        Matrix  covariance_matrix(bool sample=false) const;
+        Vector  mahalanobis_distance(bool sample=false)const;
     
         std::tuple<std::vector<Vector>, std::vector<double> > eigh() const;
 

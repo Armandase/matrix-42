@@ -27,7 +27,7 @@ int main(void) {
             };
             Matrix a(mat_a);
             
-            std::cout << "Vec a\n" << a << "mahalanobis dist\n" << a.mahalanobis_distance() << "\n"<< std::endl;
+            std::cout << "Vec a\n" << a << "mahalanobis dist\n" << a.mahalanobis_distance(true) << "\n"<< std::endl;
         }
         // {
         //     std::vector<K>vec_a = {

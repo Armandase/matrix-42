@@ -2,6 +2,88 @@
 #include <stdexcept>
 #include <cmath>
 
+namespace {
+    bool is_zero(const K& value) {
+#ifdef COMPLEX
+        return value == K(0);
+#else
+        return std::fabs(value) <= PRECISION;
+#endif
+    }
+
+    K clamp_zero_if_needed(const K& value) {
+#ifdef COMPLEX
+        return value;
+#else
+        return is_zero(value) ? K(0) : value;
+#endif
+    }
+
+    void gaussian_elimination(Matrix& matrix, Matrix* mirror) {
+        size_t rows = matrix.get_rows();
+        size_t cols = matrix.get_columns();
+        size_t pivot_row = 0;
+
+        for (size_t pivot_col = 0; pivot_row < rows && pivot_col < cols; ++pivot_col) {
+            size_t candidate = pivot_row;
+            while (candidate < rows && is_zero(matrix.get_specific_value(candidate, pivot_col))) {
+                ++candidate;
+            }
+
+            if (candidate == rows) {
+                continue;
+            }
+
+            if (candidate != pivot_row) {
+                matrix.swap_rows(pivot_row, candidate);
+                if (mirror) {
+                    mirror->swap_rows(pivot_row, candidate);
+                }
+            }
+
+            K pivot = matrix.get_specific_value(pivot_row, pivot_col);
+            if (is_zero(pivot)) {
+                continue;
+            }
+
+            for (size_t col = pivot_col; col < cols; ++col) {
+                K updated_value = matrix.get_specific_value(pivot_row, col) / pivot;
+                matrix.set_specific_value(pivot_row, col, clamp_zero_if_needed(updated_value));
+            }
+
+            if (mirror) {
+                size_t mirror_cols = mirror->get_columns();
+                for (size_t col = 0; col < mirror_cols; ++col) {
+                    K updated_value = mirror->get_specific_value(pivot_row, col) / pivot;
+                    mirror->set_specific_value(pivot_row, col, clamp_zero_if_needed(updated_value));
+                }
+            }
+
+            for (size_t row = pivot_row + 1; row < rows; ++row) {
+                K factor = matrix.get_specific_value(row, pivot_col);
+                if (is_zero(factor)) {
+                    continue;
+                }
+
+                for (size_t col = pivot_col; col < cols; ++col) {
+                    K updated_value = matrix.get_specific_value(row, col) - factor * matrix.get_specific_value(pivot_row, col);
+                    matrix.set_specific_value(row, col, clamp_zero_if_needed(updated_value));
+                }
+
+                if (mirror) {
+                    size_t mirror_cols = mirror->get_columns();
+                    for (size_t col = 0; col < mirror_cols; ++col) {
+                        K updated_value = mirror->get_specific_value(row, col) - factor * mirror->get_specific_value(pivot_row, col);
+                        mirror->set_specific_value(row, col, clamp_zero_if_needed(updated_value));
+                    }
+                }
+            }
+
+            ++pivot_row;
+        }
+    }
+}
+
 Matrix::Matrix(std::vector<std::vector<K> > numbers){
     usize_t rows = numbers.size();
     if (rows < 1){
@@ -297,7 +379,7 @@ int found_non_zero_column(usize_t row_start, const Matrix& matrix){
     usize_t columns = matrix.get_columns();
     for (usize_t i = 0; i < columns; i++){
         for (usize_t j = row_start; j < rows; j++){
-            if (matrix.get_specific_value(j, i) != 0){
+            if (!is_zero(matrix.get_specific_value(j, i))){
                 return i;
             }
         }
@@ -312,48 +394,7 @@ Matrix   Matrix::row_echelon_form() const {
         throw std::runtime_error("Can't compute the row echelon form of an empty matrix.");
     }
 
-    // form left to right and top to bottom
-    for (size_t i = 0; i < result.get_rows(); i++){
-        // find the first non-zero column
-        int column_non_empty = found_non_zero_column(i, result);
-        // if there is just zero column, stop
-        if (column_non_empty == -1)
-            return result;
-        // if the non-zero column is not in the diagonal change the index row
-        if (column_non_empty != static_cast<int>(i) && column_non_empty > 0)
-            i = column_non_empty - 1;
-        // pivot is the first non-zero element of the unprocess row
-        K pivot = result.get_specific_value(i, column_non_empty);
-        // if the pivot is null and there is a non-zero element in the same column, swap the rows
-        if (pivot == 0.){
-            size_t j = i + 1;
-            while (j < result.get_rows()){
-                if (!result.get_specific_value(j, column_non_empty) == false){
-                    result.swap_rows(i, j);
-                    break ;
-                }
-                j++;
-            }
-            if (j == result.get_rows())
-                continue ;
-            pivot = result.get_specific_value(i, column_non_empty);
-        }
-
-        // normalize the row
-        K factor = K(1) / pivot;
-        for (size_t j = 0; j < result.get_columns(); j++){
-            result.set_specific_value(i, j, result.get_specific_value(i, j) * factor);
-        }
-
-        // zero the other rows
-        for (size_t j = i + 1; j < result.get_rows(); j++){
-            K factor_to_zero = (result.get_specific_value(j, column_non_empty)) * -1;
-            for (size_t k = 0; k < result.get_columns(); k++){
-                result.set_specific_value(j, k, result.get_specific_value(j, k) + factor_to_zero * result.get_specific_value(i, k));
-            }
-        }
-    }
-
+    gaussian_elimination(result, nullptr);
     return result;
 }
 
@@ -367,9 +408,13 @@ Matrix Matrix::reduced_row_echelon_form() const{
         if (column_non_empty == -1)
             return result;  
         for (usize_t j = 0; j < i; j++){
-            K factor_to_zero = (result.get_specific_value(j, column_non_empty)) * -1;
+            K factor_to_zero = result.get_specific_value(j, column_non_empty);
+            if (is_zero(factor_to_zero))
+                continue;
+            factor_to_zero *= -1;
             for (usize_t k = 0; k < columns; k++){
-                result.set_specific_value(j, k, result.get_specific_value(j, k) + factor_to_zero * result.get_specific_value(i, k));
+                K updated_value = result.get_specific_value(j, k) + factor_to_zero * result.get_specific_value(i, k);
+                result.set_specific_value(j, k, clamp_zero_if_needed(updated_value));
             }
         }
     }
@@ -455,50 +500,7 @@ Matrix   Matrix::row_echelon_form_on_pair(Matrix& mirror) const {
         throw std::runtime_error("The mirror matrix must have the same size as the matrix.");
     }
 
-    // form left to right and top to bottom
-    for (size_t i = 0; i < result.get_rows(); i++){
-        // find the first non-zero column
-        int column_non_empty = found_non_zero_column(i, result);
-        // if there is just zero column, stop
-        if (column_non_empty == -1)
-            return result;
-        // if the non-zero column is not in the diagonal change the index row
-        if (column_non_empty != static_cast<int>(i))
-            i = column_non_empty - 1;
-
-        // pivot is the first non-zero element of the unprocess row
-        K pivot = result.get_specific_value(i, column_non_empty);
-        // if the pivot is null and there is a non-zero element in the same column, swap the rows
-        if (pivot == 0.){
-            size_t j = i + 1;
-            while (j < result.get_rows()){
-                if (!result.get_specific_value(j, column_non_empty) == false){
-                    result.swap_rows(i, j);
-                    mirror.swap_rows(i, j);
-                    break ;
-                }
-                j++;
-            }
-            if (j == result.get_rows())
-                continue ;
-        }
-
-        // normalize the row
-        K factor = K(1) / pivot;
-        for (size_t j = 0; j < result.get_columns(); j++){
-            result.set_specific_value(i, j, result.get_specific_value(i, j) * factor);
-            mirror.set_specific_value(i, j, mirror.get_specific_value(i, j) * factor);
-        }
-
-        // zero the other rows
-        for (size_t j = i + 1; j < result.get_rows(); j++){
-            K factor_to_zero = (result.get_specific_value(j, column_non_empty)) * -1;
-            for (size_t k = 0; k < result.get_columns(); k++){
-                result.set_specific_value(j, k, result.get_specific_value(j, k) + factor_to_zero * result.get_specific_value(i, k));
-                mirror.set_specific_value(j, k, mirror.get_specific_value(j, k) + factor_to_zero * mirror.get_specific_value(i, k));
-            }
-        }
-    }
+    gaussian_elimination(result, &mirror);
 
     return result;
 }
@@ -511,7 +513,7 @@ int Matrix::found_non_identity_column(size_t row_start, const Matrix& matrix) co
     usize_t columns = matrix.get_columns();
     for (int i = columns - 1; i >= 0; i--){
         for (int j = row_start; j >= 0; j--){
-            if (matrix.get_specific_value(j, i) != 0){
+            if (!is_zero(matrix.get_specific_value(j, i))){
                 return i;
             }
         }
@@ -615,7 +617,7 @@ K       Matrix::rows_mean(usize_t i) const{
 
 // Formula: $$\Sigma=\frac{1}{n-1}\sum_{i=1}^{n}(x_{i}-\mu)(x_{i}-\mu)^{T}$$
 
-Matrix  Matrix::covariance_matrix() const{
+Matrix  Matrix::covariance_matrix(bool sample) const{
     usize_t rows = this->get_rows();
     usize_t columns = this->get_columns();
 
@@ -630,17 +632,19 @@ Matrix  Matrix::covariance_matrix() const{
             }
         }
     }
-    cov_matrix.scl(1.0 / K(rows - 1));
+    if (sample){
+        cov_matrix.scl(1.0 / K(rows - 1));
+    }else{
+        cov_matrix.scl(1.0 / K(rows));
+    }
     return cov_matrix;
 }
 
 
 // Formula: $$D_{m}=\sqrt{(x - \mu)^{T}\Sigma^{-1}(x-\mu)}$$
-Vector Matrix::mahalanobis_distance()const{
-    Matrix cov_matrix = this->covariance_matrix();
+Vector Matrix::mahalanobis_distance(bool sample)const{
+    Matrix cov_matrix = this->covariance_matrix(sample);
     cov_matrix = cov_matrix.inverse();
-
-    std::cout << "Covariance matrix in Mahalanobis distance computation:\n" << cov_matrix << std::endl;
 
     Vector mean_vector(this->get_columns());
     for (usize_t j = 0; j < this->get_columns(); j++){
@@ -653,10 +657,12 @@ Vector Matrix::mahalanobis_distance()const{
         row_vector.sub(mean_vector);
         substract.set_row_specific_value(i, row_vector.get_values());
     }
+    std::cout << "Transposed :\n" << substract.get_rows() << "x" << substract.get_columns() << std::endl;
+    std::cout << "Covariance :\n" << cov_matrix.get_rows() << "x" << cov_matrix.get_columns() << std::endl;
+    Matrix mult = substract.mul_mat(cov_matrix);
+    std::cout << "Multiplied matrix in Mahalanobis distance computation:\n" << mult << std::endl;
     Matrix transposed = substract.transpose();
-    Matrix mult = transposed.mul_mat(cov_matrix);
-    Matrix final = mult.mul_mat(substract);
-
+    Matrix final = mult.mul_mat(transposed);
     std::cout << "Final matrix in Mahalanobis distance computation:\n" << final << std::endl;
     Vector distances(this->get_rows());
     for (usize_t i = 0; i < this->get_rows(); i++){
