@@ -36,9 +36,11 @@ class Vector{
         Vector  cross_product(Vector &v);
         Matrix  outer_product(Vector &v);
         Vector  hadamard_product(const Vector &v) const;
-        K    norm_1();
-        K    norm();
-        K    norm_inf();
+        K    norm_1() const;
+        K    norm() const;
+        K    norm_inf() const;
+        Vector normalize() const;
+        Vector  normalizeNegativeLargestComponent() const;
         K    average() const;
         Vector  sort() const;
         Vector  as_rank() const;

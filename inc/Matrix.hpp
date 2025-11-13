@@ -32,6 +32,7 @@ class Matrix{
         void    set_row_specific_value (size_t i, std::vector<K> row_values);
         void    set_column_specific_value (size_t j, std::vector<K> column_values);
         std::vector<K> get_row(int i) const;
+        std::vector<K> get_column(int j) const;
         size_t  get_rows() const;
         size_t  get_columns() const;
         size_t  get_nb_values() const;

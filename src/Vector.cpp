@@ -211,7 +211,7 @@ Vector  Vector::hadamard_product(const Vector &v) const{
 // La norme d'un vecteur est une mesure de sa longueur / taille.
 // norme 1 : somme des valeurs absolues des coordonnées 
 // Formula:  $$||\mathbf{a}||_{1} = \sum_{i=1}^{n} |a_{i}|$$
-K   Vector::norm_1(){
+K   Vector::norm_1() const {
     usize_t size = _values.size();
     K   result = (_values[0] < 0) ? -_values[0] : _values[0];
     K   abs;
@@ -255,7 +255,7 @@ K   sqrt(K value) {
 
 // norme 2 : racine carrée de la somme des carrés des coordonnées
 // Formula:  $$||\mathbf{a}||_{2} = \sqrt{\sum_{i=1}^{n} a_{i}^{2}}$$
-K   Vector::norm(){
+K   Vector::norm() const {
     usize_t size = _values.size();
     K   tmp;
     K   abs = (_values[0] < 0) ? -_values[0] : _values[0];
@@ -271,7 +271,7 @@ K   Vector::norm(){
 
 // norme infinie : valeur absolue de la coordonnée la plus grande
 // Formula:  $$||\mathbf{a}||_{\infty} = \max_{i} |a_{i}|$$
-K   Vector::norm_inf(){
+K   Vector::norm_inf() const {
     usize_t size = _values.size();
     K   abs = (_values[0] < 0) ? -_values[0] : _values[0];
     K   result = abs;
@@ -284,6 +284,38 @@ K   Vector::norm_inf(){
     }
     return (result);
 }
+
+Vector  Vector::normalizeNegativeLargestComponent() const{
+    size_t max_idx = 0;
+    Vector result = *this;
+    std::vector<K> vals = result.get_values();
+    K max_abs = std::fabs(vals[0]);
+    for (size_t ii = 1; ii < vals.size(); ++ii){
+        if (std::fabs(vals[ii]) > max_abs){
+            max_abs = std::fabs(vals[ii]);
+            max_idx = ii;
+        }
+    }
+    if (vals[max_idx] > 0)
+        vals[max_idx] *= -1;
+    K norm = result.norm();
+    if (!norm){
+        throw std::runtime_error("Can't normalize a zero vector");
+    }
+    result.scl(1.0 / norm);
+    return result;
+}
+
+Vector Vector::normalize() const {
+    K norm = this->norm();
+    if (!norm){
+        throw std::runtime_error("Can't normalize a vector with null norm.");
+    }
+    Vector normalized = *this;
+    normalized.scl(1.0 / norm);
+    return normalized;
+}
+
 
 // Moyenne des valeurs du vecteur
 // Formula:  $$\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_{i}$$

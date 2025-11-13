@@ -17,6 +17,17 @@ int main(void) {
             
         //     std::cout << "Vec a\n" << a << "pearson correl\n" << a.spearman_correlation(b) << "\n"<< std::endl;
         // }
+        // {
+        //     std::vector<std::vector<K> > mat_a = {
+        //         {2.5,  2.4,  0.5},
+        //         {0.5,  0.7, -0.1},
+        //         {2.2,  2.9,  0.3},
+        //     };
+        //     Matrix a(mat_a);
+
+        //     // std::cout << "Vec a\n" << a << "eigen values\n" << a.eigen() << "\n"<< std::endl;
+        //     a.eigen();
+        // }
         {
             std::vector<std::vector<K> > mat_a = {
                 {2.5,  2.4,  0.5},
@@ -24,9 +35,9 @@ int main(void) {
                 {2.2,  2.9,  0.3},
             };
             Matrix a(mat_a);
-            
-            // std::cout << "Vec a\n" << a << "eighen values\n" << a.eigh() << "\n"<< std::endl;
-            a.eigh();
+
+            std::cout << "Vec a\n" << a << "gram schmidt\n" << a.gramSchmidt() << "\n"<< std::endl;
+            // a.eigen();
         }
         // {
         //     std::vector<K>vec_a = {

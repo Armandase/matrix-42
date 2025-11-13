@@ -145,6 +145,16 @@ std::vector<K> Matrix::get_row(int i) const{
     return (this->_values[i]);
 }
 
+std::vector<K> Matrix::get_column(int j) const {
+    usize_t rows = this->get_rows();
+    std::vector<K> column_values(rows);
+    for (usize_t i = 0; i < rows; i++){
+        column_values[i] = this->get_specific_value(i, j);
+    }
+    return column_values;
+}
+
+
 size_t  Matrix::get_rows() const{
     return this->_values.size();
 }
@@ -687,21 +697,35 @@ Vector Matrix::mahalanobis_distance(bool sample)const{
     return distances;
 }
 
+
 // $$ {\displaystyle \mathbf {u} _{k}=\mathbf {v} _{k}-\sum _{j=1}^{k-1}\mathrm {proj} _{\mathbf {u} _{j}}\,(\mathbf {v} _{k})} $$
 // 
 // $${\displaystyle \mathbf {e} _{k}={\mathbf {u} _{k} \over \|\mathbf {u} _{k}\|}}$$
 
 Matrix  Matrix::gramSchmidt() const{
-    size_t nb_rows = this->get_rows();
-    Vector v(this->get_row(0));
-    std::vector<Vector> vec_u = {v};
+    size_t nb_cols = this->get_columns();
+    Vector v(this->get_column(0));
+    std::vector<Vector> vec_u;
+    std::vector<Vector> vec_e;
 
-    for (size_t i = 0; i < nb_rows; i++){
-        if (i != 0){
+    for (size_t i = 0; i < nb_cols; i++){
+        Vector v = this->get_column(i);
+
+        Vector u(v.get_size());
+        for (size_t j = 0; j < i; j++){
+            u.add(vec_u[j].projection(v));
         }
+        vec_u.push_back(v - u);
+        // vec_e.push_back(vec_u[i].normalizeNegativeLargestComponent()); // use this one to match numpy numericals signs
+        vec_e.push_back(vec_u[i].normalize());
     }
-}
 
+    Matrix result(this->get_rows(), nb_cols);
+    for (size_t i = 0; i < nb_cols; i++){
+        result.set_column_specific_value(i, vec_e[i].get_values());
+    }
+    return result;
+}
 
 std::tuple<std::vector<Vector>, std::vector<double> > Matrix::eigen() const{
     // pour calculer les valeurs propres il faut résoudre
