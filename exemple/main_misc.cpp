@@ -22,12 +22,11 @@ int main(void) {
                 {2.5,  2.4,  0.5},
                 {0.5,  0.7, -0.1},
                 {2.2,  2.9,  0.3},
-                {1.9,  2.2,  0.0},
-                {3.1,  3.0,  0.7}
             };
             Matrix a(mat_a);
             
-            std::cout << "Vec a\n" << a << "mahalanobis dist\n" << a.mahalanobis_distance(true) << "\n"<< std::endl;
+            // std::cout << "Vec a\n" << a << "eighen values\n" << a.eigh() << "\n"<< std::endl;
+            a.eigh();
         }
         // {
         //     std::vector<K>vec_a = {

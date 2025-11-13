@@ -21,6 +21,7 @@ typedef double K;
 class Matrix{
     public:
         Matrix(std::vector<std::vector<K> >);
+        Matrix(Vector vec, bool diagonal=false);
         Matrix(size_t size_x, size_t size_y);
         Matrix(const Matrix& matrix);
         Matrix operator = (const Matrix& matrix);
@@ -64,6 +65,7 @@ class Matrix{
         Vector  mahalanobis_distance(bool sample=false)const;
     
         std::tuple<std::vector<Vector>, std::vector<double> > eigh() const;
+        std::tuple<Matrix, Matrix, Matrix> svd() const;
 
         Matrix& operator + (const Matrix&); 
 		Matrix& operator - (const Matrix&);

@@ -110,6 +110,22 @@ Matrix::Matrix(size_t size_x, size_t size_y){
     this->reset();
 }
 
+Matrix::Matrix(Vector vec, bool diagonal) {
+    usize_t size = vec.get_size();
+    if (diagonal) {
+        _values = std::vector<std::vector<K>>(size, std::vector<K>(size, 0));
+        for (usize_t i = 0; i < size; i++) {
+            _values[i][i] = vec.get_value(i);
+        }
+    } else {
+        _values = std::vector<std::vector<K>>(1, std::vector<K>(size, 0));
+        for (usize_t i = 0; i < size; i++) {
+            _values[0][i] = vec.get_value(i);
+        }
+    }
+}
+
+
 Matrix::Matrix(const Matrix& matrix)
 {
     _values = matrix.get_values();
@@ -676,7 +692,9 @@ std::tuple<std::vector<Vector>, std::vector<double> > Matrix::eigh() const{
     // pour calculer les valeurs propres il faut résoudre
     // A * v = λ * v
     // ou A est la matrice, v est un vecteur propre et λ un valeur propre
-    //{\displaystyle \lambda ={\frac {{\rm {Tr}}(A)\pm {\sqrt {{\rm {Tr}}(A)^{2}-4\,{\rm {det}}(A)}}}{2}}.}
+
+    //$$ {\displaystyle \lambda ={\frac {{\rm {Tr}}(A)\pm {\sqrt {{\rm {Tr}}(A)^{2}-4\,{\rm {det}}(A)}}}{2}}.} $$
+
     double trace = this->trace();
     double det = this->determinant();
 
@@ -699,8 +717,35 @@ std::tuple<std::vector<Vector>, std::vector<double> > Matrix::eigh() const{
     double lambdaNeg = formula(trace, det, neg); 
     std::cout << "Pos lambda:" << lambdaPos << std::endl;
     std::cout << "Neg lambda:" << lambdaNeg << std::endl;
+
+    Matrix A_minus_lambdaPos_I = *this;
+    Matrix A_minus_lambdaNeg_I = *this;
+
+    // A_minus_lambdaPos_I.scl(-1);
+    // A_minus_lambdaPos_I.add(Matrix::identity() * lambdaPos);
+    A_minus_lambdaPos_I.sub(Matrix::identity() * lambdaPos);
+
+    A_minus_lambdaNeg_I.scl(-1);
+    A_minus_lambdaNeg_I.add(Matrix::identity() * lambdaNeg);
+    // A_minus_lambdaNeg_I.sub(Matrix::identity() * lambdaNeg);
+
+    std::cout << "A - lambdaPos * I:\n" << A_minus_lambdaPos_I << std::endl;
+    std::cout << "A - lambdaNeg * I:\n" << A_minus_lambdaNeg_I << std::endl;
+
+    std::cout << A_minus_lambdaNeg_I.reduced_row_echelon_form() << std::endl;
+    std::cout << A_minus_lambdaPos_I.reduced_row_echelon_form() << std::endl;
+
     return std::make_tuple(std::vector<Vector>(), std::vector<double>());
 }
+
+// U = (A*A transposed)->eighen vector map into matrix
+// SIGMA = diagonal matrix with squared shared U & V eighen values in diag (sorted)
+// V = (A transposed*A)->eighen vector map into matrix
+std::tuple<Matrix, Matrix, Matrix> Matrix::svd() const{
+
+    return std::make_tuple(Matrix(1, 1), Matrix(1, 1), Matrix(1, 1));
+}
+
 
 Matrix&  Matrix::operator + (const  Matrix& add_overload)
 {
