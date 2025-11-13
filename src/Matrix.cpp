@@ -687,8 +687,23 @@ Vector Matrix::mahalanobis_distance(bool sample)const{
     return distances;
 }
 
+// $$ {\displaystyle \mathbf {u} _{k}=\mathbf {v} _{k}-\sum _{j=1}^{k-1}\mathrm {proj} _{\mathbf {u} _{j}}\,(\mathbf {v} _{k})} $$
+// 
+// $${\displaystyle \mathbf {e} _{k}={\mathbf {u} _{k} \over \|\mathbf {u} _{k}\|}}$$
 
-std::tuple<std::vector<Vector>, std::vector<double> > Matrix::eigh() const{
+Matrix  Matrix::gramSchmidt() const{
+    size_t nb_rows = this->get_rows();
+    Vector v(this->get_row(0));
+    std::vector<Vector> vec_u = {v};
+
+    for (size_t i = 0; i < nb_rows; i++){
+        if (i != 0){
+        }
+    }
+}
+
+
+std::tuple<std::vector<Vector>, std::vector<double> > Matrix::eigen() const{
     // pour calculer les valeurs propres il faut résoudre
     // A * v = λ * v
     // ou A est la matrice, v est un vecteur propre et λ un valeur propre

@@ -64,8 +64,11 @@ class Matrix{
         Matrix  covariance_matrix(bool sample=false) const;
         Vector  mahalanobis_distance(bool sample=false)const;
     
-        std::tuple<std::vector<Vector>, std::vector<double> > eigh() const;
         std::tuple<Matrix, Matrix, Matrix> svd() const;
+        Matrix  gramSchmidt() const;
+        Matrix  orthonormalization() const;
+        Matrix  orthogonalization() const;
+        std::tuple<std::vector<Vector>, std::vector<double> > eigen() const;
 
         Matrix& operator + (const Matrix&); 
 		Matrix& operator - (const Matrix&);
