@@ -306,6 +306,28 @@ Vector  Vector::normalizeNegativeLargestComponent() const{
     return result;
 }
 
+K   Vector::lp_distance(const Vector& v, uint32_t p) const{
+    if (p == 0){
+        throw std::runtime_error("lp_distance: p can't be null.");
+    }
+    usize_t length = this->get_size();
+    if (v.get_size() != length){
+        throw std::runtime_error("lp_distance: Vectors must have the same length.");
+    }
+
+    K ret = 0.;
+    for (usize_t i = 0; i < length; i++){
+        ret += std::pow(this->get_value(i) - v.get_value(i), p);
+    }
+    std::cout << "ret:" << ret << " ; 1/p:  "<< 1.0 / p << std::endl;
+    if (ret < 0){
+        return -std::pow(-ret, 1.0 / p);
+    }
+    return std::pow(ret, 1.0 / p);
+
+}
+
+
 Vector Vector::normalize() const {
     K norm = this->norm();
     if (!norm){

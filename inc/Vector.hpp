@@ -41,6 +41,7 @@ class Vector{
         K    norm_inf() const;
         Vector normalize() const;
         Vector  normalizeNegativeLargestComponent() const;
+        K    lp_distance(const Vector& v, uint32_t p) const;
         K    average() const;
         Vector  sort() const;
         Vector  as_rank() const;
