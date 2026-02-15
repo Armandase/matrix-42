@@ -701,7 +701,7 @@ Vector Matrix::mahalanobis_distance(bool sample)const{
 // $$ {\displaystyle \mathbf {u} _{k}=\mathbf {v} _{k}-\sum _{j=1}^{k-1}\mathrm {proj} _{\mathbf {u} _{j}}\,(\mathbf {v} _{k})} $$
 // 
 // $${\displaystyle \mathbf {e} _{k}={\mathbf {u} _{k} \over \|\mathbf {u} _{k}\|}}$$
-
+// Gram-Schmidt is used to orthogonalize a set of vectors.
 Matrix  Matrix::gramSchmidt() const{
     size_t nb_cols = this->get_columns();
     Vector v(this->get_column(0));
@@ -776,6 +776,42 @@ std::tuple<std::vector<Vector>, std::vector<double> > Matrix::eigen() const{
 
     return std::make_tuple(std::vector<Vector>(), std::vector<double>());
 }
+
+Matrix Matrix::centerByColumn() const{
+    Matrix result(*this);
+    for (usize_t j = 0; j < this->get_columns(); j++){
+        K mean = this->columns_mean(j);
+        for (usize_t i = 0; i < this->get_rows(); i++){
+            K updated_value = result.get_specific_value(i, j) - mean;
+            result.set_specific_value(i, j, updated_value);
+        }
+    }
+    return result;
+}
+
+// steps :
+// 1 center data by substracting the mean of each column
+// 2 compute covaraince matrix
+// 3 compute eigen values and eigenvectors of the covariance matrix
+// 4 sort the eigen values and eigen vectors in decreasing order of eigen values
+// (optional) 5 select the top k eigen values and corresponding eigen vectors
+// 6 from a projection matrix with the selected eigen vectors as columns
+// 7 project the original data on the projection matrix to get the reduced data
+Matrix  Matrix::PCA() const{
+    Matrix centered = this->centerByColumn();
+    std::cout << "Centered matrix:\n" << centered << std::endl;
+    Matrix cov_matrix = centered.covariance_matrix(true);
+    std::cout << "Covariance matrix:\n" << cov_matrix << std::endl;
+    // auto [eigenvectors, eigenvalues] = cov_matrix.eigen();
+
+    // std::cout << "Eigenvalues:\n";
+    // for (const auto& eigenvalue : eigenvalues) {
+        // std::cout << eigenvalue << "\n";
+    // }
+
+    return Matrix(1, 1);
+}
+
 
 // U = (A*A transposed)->eighen vector map into matrix
 // SIGMA = diagonal matrix with squared shared U & V eighen values in diag (sorted)

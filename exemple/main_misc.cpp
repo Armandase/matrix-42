@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 
 #include "../inc/Matrix.hpp"
 
@@ -6,18 +7,7 @@ int main(void) {
     std::cout << "Misc: \n";
     // try {
         // {
-        //     std::vector<K>vec_a = {
-        //         {-1 ,-2 ,-3 ,-4},
-        //     };
-        //     Vector a(vec_a);
-
-        //     Vector b(
-        //         {1 ,2 ,3 ,6}
-        //     );
-            
-        //     std::cout << "Vec a\n" << a << "pearson correl\n" << a.spearman_correlation(b) << "\n"<< std::endl;
-        // }
-        // {
+        //     // orthogonalization test
         //     std::vector<std::vector<K> > mat_a = {
         //         {2.5,  2.4,  0.5},
         //         {0.5,  0.7, -0.1},
@@ -25,44 +15,35 @@ int main(void) {
         //     };
         //     Matrix a(mat_a);
 
-        //     // std::cout << "Vec a\n" << a << "eigen values\n" << a.eigen() << "\n"<< std::endl;
-        //     a.eigen();
+        //     std::cout << "Vec a\n" << a << "gram schmidt\n" << a.gramSchmidt() << "\n"<< std::endl;
+        //     Matrix gram = a.gramSchmidt();
+        //     auto res1 = Vector(gram.get_row(0));
+        //     auto res2 = Vector(gram.get_row(1));
+        //     auto res3 = Vector(gram.get_row(2));
+            
+        //     std::cout << std::fixed << std::setprecision(5) << a;
+        //     std::cout << "Row 1 & 2: " << res1.dot(res2) << "\n";
+        //     std::cout << "Row 1 & 3: " << res1.dot(res3) << "\n";
+        //     std::cout << "Row 2 & 3: " << res2.dot(res3) << std::endl;
+        //     // a.eigen();
         // }
         {
             std::vector<std::vector<K> > mat_a = {
-                {2.5,  2.4,  0.5},
-                {0.5,  0.7, -0.1},
-                {2.2,  2.9,  0.3},
+                {2.5,  2.4,  0.5, 5.5,  4.4,  6.5},
+                {0.5,  0.7, -0.1, 1.5,  1.7,  0.9},
+                {2.2,  2.9,  0.3, 4.2,  4.9,  3.3},
+                {1.9,  2.2,  0.4, 3.9,  4.2,  3.4},
+                {3.1,  3.0,  0.5, 5.1,  5.0,  6.5},
+                {2.3,  2.7,  0.6, 4.3,  4.7,  5.6},
+                {2,    1.6, -0.1, 3.8,  3.2,  4.8},
             };
             Matrix a(mat_a);
 
-            std::cout << "Vec a\n" << a << "gram schmidt\n" << a.gramSchmidt() << "\n"<< std::endl;
+            std::cout << "Matrix a\n" << a << "\n";
+            // std::cout << a.PCA() << "\n"<< std::endl;
+            a.PCA();
             // a.eigen();
         }
-        // {
-        //     std::vector<K>vec_a = {
-        //         {2., 1.},
-        //     };
-        //     Vector a(vec_a);
-
-        //     double theta =  90;
-        //     std::cout << "Vec a\n" << a << "outer\n" << a.rotation(theta, true) << "\n"<< std::endl;
-        // }
-        // {
-        //     std::vector<std::vector<K> > matrix_u = {
-        //         {1., 2.},
-        //         {2., 4.},
-        //     };
-        //     Matrix u(matrix_u);
-
-        //     std::vector<std::vector<K> > matrix_v = {
-        //         {1., 2.},
-        //         {2., 4.},
-        //     };
-        //     Matrix v(matrix_v);
-        //     std::cout << "Matrix U\n" << u << "\n"<< std::endl;
-        //     std::cout << "Kronecker\n" << u.kronecker_product(v) << "\n"<< std::endl;
-        // }
 
     // } catch (std::exception& e){
     //     std::cout << e.what() << std::endl; 

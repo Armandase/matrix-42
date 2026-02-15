@@ -67,8 +67,10 @@ class Matrix{
     
         std::tuple<Matrix, Matrix, Matrix> svd() const;
         Matrix  gramSchmidt() const;
-        Matrix  orthonormalization() const;
-        Matrix  orthogonalization() const;
+        Matrix  centerByColumn() const;
+        Matrix  PCA() const;
+        // Matrix  orthonormalization() const;
+        // Matrix  orthogonalization() const;
         std::tuple<std::vector<Vector>, std::vector<double> > eigen() const;
 
         Matrix& operator + (const Matrix&); 
