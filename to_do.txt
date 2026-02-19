@@ -1,6 +1,4 @@
 PCA
 SVD
-Gram schmidt
-orthonomalisation
 rotations matrices -> fix pour 3D
 

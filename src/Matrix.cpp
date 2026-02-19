@@ -821,6 +821,26 @@ std::tuple<Matrix, Matrix, Matrix> Matrix::svd() const{
     return std::make_tuple(Matrix(1, 1), Matrix(1, 1), Matrix(1, 1));
 }
 
+Matrix Matrix::rotation(double theta) const{
+    Matrix rot_x({
+        {1, 0, 0},
+        {0, cos(theta), -sin(theta)},
+        {0, sin(theta), cos(theta)}
+    });
+
+    Matrix rot_y({
+        {cos(theta), 0, sin(theta)},
+        {0, 1, 0},
+        {-sin(theta), 0, cos(theta)}
+    });
+
+    Matrix rot_z({
+        {cos(theta), -sin(theta), 0},
+        {sin(theta), cos(theta), 0},
+        {0, 0, 1},
+    });
+    return rot_x * rot_y * rot_z;
+}
 
 Matrix&  Matrix::operator + (const  Matrix& add_overload)
 {

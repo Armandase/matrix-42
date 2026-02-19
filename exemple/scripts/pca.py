@@ -24,3 +24,6 @@ for col in range(matrix.shape[1]):
 print("Centered matrix:\n", matrix)
 cov_matrix = np.cov(matrix, rowvar=False)
 print("Covariance matrix:\n", cov_matrix)
+eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
+print("Eigenvalues:\n", eigenvalues)
+print("Eigenvectors:\n", eigenvectors)
