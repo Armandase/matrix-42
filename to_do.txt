@@ -1,4 +1,3 @@
 PCA
 SVD
 matrice rotation => besoin tester
-
