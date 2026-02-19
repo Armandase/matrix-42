@@ -727,6 +727,23 @@ Matrix  Matrix::gramSchmidt() const{
     return result;
 }
 
+
+std::pair<Matrix, Matrix> Matrix::qr_decomposition() const{
+    Matrix Q = this->gramSchmidt();
+    Matrix R = Q.transpose() * (*this);
+
+    // if value in R are inferior to PRECISION, we set them to 0 to avoid numerical issues
+    for (size_t i = 0; i < R.get_rows(); i++){
+        for (size_t j = 0; j < R.get_columns(); j++){
+            if (abs(R.get_specific_value(i, j)) <= PRECISION){
+                R.set_specific_value(i, j, 0);
+            }
+        }
+    }
+    return {Q, R};
+}
+
+
 std::tuple<std::vector<Vector>, std::vector<double> > Matrix::eigen() const{
     // pour calculer les valeurs propres il faut résoudre
     // A * v = λ * v

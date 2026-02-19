@@ -68,6 +68,7 @@ class Matrix{
     
         std::tuple<Matrix, Matrix, Matrix> svd() const;
         Matrix  gramSchmidt() const;
+        std::pair<Matrix, Matrix> qr_decomposition() const;
         Matrix  centerByColumn() const;
         Matrix  PCA() const;
         // Matrix  orthonormalization() const;
