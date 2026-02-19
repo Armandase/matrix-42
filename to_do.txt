@@ -1,5 +1,4 @@
 PCA
 SVD
-rotations matrices pour vecteur -> fix pour 3D
 matrice rotation => besoin tester
 

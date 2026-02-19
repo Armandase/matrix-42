@@ -838,22 +838,26 @@ std::tuple<Matrix, Matrix, Matrix> Matrix::svd() const{
     return std::make_tuple(Matrix(1, 1), Matrix(1, 1), Matrix(1, 1));
 }
 
-Matrix Matrix::rotation(double theta) const{
+Matrix Matrix::rotation(double theta_x, double theta_y, double theta_z, bool is_degrees) const{
+    theta_x = is_degrees ? theta_x * (M_PI / 180) : theta_x;
+    theta_y = is_degrees ? theta_y * (M_PI / 180) : theta_y;
+    theta_z = is_degrees ? theta_z * (M_PI / 180) : theta_z;
+
     Matrix rot_x({
         {1, 0, 0},
-        {0, cos(theta), -sin(theta)},
-        {0, sin(theta), cos(theta)}
+        {0, cos(theta_x), -sin(theta_x)},
+        {0, sin(theta_x), cos(theta_x)}
     });
 
     Matrix rot_y({
-        {cos(theta), 0, sin(theta)},
+        {cos(theta_y), 0, sin(theta_y)},
         {0, 1, 0},
-        {-sin(theta), 0, cos(theta)}
+        {-sin(theta_y), 0, cos(theta_y)}
     });
 
     Matrix rot_z({
-        {cos(theta), -sin(theta), 0},
-        {sin(theta), cos(theta), 0},
+        {cos(theta_z), -sin(theta_z), 0},
+        {sin(theta_z), cos(theta_z), 0},
         {0, 0, 1},
     });
     return rot_x * rot_y * rot_z;

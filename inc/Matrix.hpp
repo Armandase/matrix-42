@@ -60,7 +60,7 @@ class Matrix{
         Matrix  inverse() const;
         usize_t rank() const;
         Matrix  kronecker_product(const Matrix& other) const;
-        Matrix  rotation(double theta) const;
+        Matrix  rotation(double theta_x, double theta_y, double theta_z, bool is_degrees) const;
         K       columns_mean(usize_t j) const;
         K       rows_mean(usize_t i) const;
         Matrix  covariance_matrix(bool sample=false) const;
